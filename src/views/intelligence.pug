@@ -1,0 +1,88 @@
+extends _layout_bootstrap
+
+block content
+  
+  h1 AI guesses the best foreground color from 3 random RGB background color
+  p
+    li guess of 0 is black
+    li guess of 1 is white
+        
+  table.table.table-bordered
+    tr
+      th Model
+      th Guess
+      th Train
+    tr
+      td
+        p
+          li key: 
+            strong #{key}
+        
+        p
+          li model record(s): #{modelLength}
+          
+        p
+          #{diagram}
+        
+        p.float-right
+          a(class='btn btn-outline-danger m-1' href='/intelligence?reset=true') Reset
+      
+      td
+    
+        p
+          li input
+            pre #{inputString}
+        p
+          li Brain.likely: #{likely}
+          li Brain.guess: #{guess}
+          li guessRounded: #{guessRounded}
+          li guessFloat: #{guessFloat}
+          li guessPercent: #{guessPercent}
+          li confidenceLOW: #{confidenceLOW}
+          li confidenceHIGH: #{confidenceHIGH}
+          li confidencePercent: #{confidencePercent}
+          
+        p  
+          li #{guessRounded} is closer to #{guess}, I guess #{guessStyle.color.toUpperCase()}
+
+      td
+
+        #background.div(style=backgroundStyle)
+          span(style={ color: 'black' })
+            strong Black Text
+          span(style={ padding: '12px' }) or
+          span(style={ color: 'white' })
+            strong  White Text
+          p
+            div(style=guessStyle) I CHOSE #{guessStyle.color.toUpperCase()}
+            
+        p
+          form
+            .form-group
+              div(for='guessPercent')
+                span BLACK
+                span.float-right WHITE
+              input.form-control-range(id='guessPercent' type='range' value=guessPercent)
+                
+                        
+        div(style={ 'text-align': 'center' })
+                  
+          p #{confidencePercent} % confidence it is #{guessStyle.color.toUpperCase()}
+                  
+          a(class='btn btn-outline-success m-1' href='/intelligence?answer=correct&prevInputString=' + prevInputString + '&prevGuessRounded=' + guessRounded) Correct
+          
+          a(class='btn btn-outline-warning m-1' href='/intelligence?answer=wrong&prevInputString=' + prevInputString + '&prevGuessRounded=' + guessRounded) Wrong
+          
+          a(class='btn btn-outline-secondary m-1' href='/intelligence') Skip >
+    
+          p
+            if newRecordsLength > 0
+              p #{newRecordsLength} new training record(s)
+              
+              a(class='btn btn-outline-primary m-1' href='/intelligence?add=true') Append your training and re-train Model
+            
+  if newRecordsLength > 0    
+    .alert.alert-success
+      strong New training
+      p
+        pre #{newRecordsString}
