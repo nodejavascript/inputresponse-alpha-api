@@ -1,5 +1,5 @@
 # Dockerfile
-FROM node:14-alpine
+FROM node:16.3.0-alpine
 
 # put the app in the right folder
 RUN mkdir -p /var/app
@@ -19,3 +19,6 @@ COPY ./ /var/app
 
 EXPOSE 4014
 CMD [ "node", "-r", "esm", "index.js" ]
+
+
+# docker system prune

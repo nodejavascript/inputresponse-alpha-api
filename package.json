@@ -6,7 +6,7 @@
  "scripts": {
   "start": "nodemon -r -q esm index.js",
   "test": "standard  --verbose",
-  "docker": "docker rm -f inputresponse-alpha-api; docker build . -t inputresponse-alpha-api; docker run --restart always -p 4014:4014 -d --network web --name inputresponse-alpha-api inputresponse-alpha-api"
+  "docker": "docker rm -f inputresponse-alpha-api; docker build . -t inputresponse-alpha-api; docker run --restart always -p 80:4014 --network web -d --name inputresponse-alpha-api inputresponse-alpha-api"
  },
  "repository": {
   "type": "git",
