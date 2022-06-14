@@ -9,7 +9,7 @@ export default gql`
   }
 
   extend type Mutation {
-    insertModelSample (insertModelSampleInput: InsertModelSampleInput!): ModelSample @authenticated
+    insertModelSample (insertModelSampleInput: InsertModelSampleInput!): ModelSample
     updateModelSample (updateModelSampleInput: UpdateModelSampleInput!): ModelSample @authenticated
   }
 
