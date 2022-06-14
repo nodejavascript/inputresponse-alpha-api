@@ -1,7 +1,7 @@
 {
  "name": "inputresponse-alpha-api",
  "version": "1.0.0",
- "description": "",
+ "description": "Train neural networks, respond to client inference-requests, providing easy access to AI with the benefits of graph reporting",
  "main": "index.js",
  "scripts": {
   "start": "nodemon -r -q esm index.js",

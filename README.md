@@ -81,7 +81,7 @@
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
-This GraphQL API is used to train neural networks and switftly respond to client inference-requests thereby providing easy access to AI with the benefits of graph reporting.
+This GraphQL API is used to train neural networks and swiftly respond to client inference-requests thereby providing easy access to AI with the benefits of graph reporting.
 
 See client-side [inputresponse-alpha-client](https://github.com/nodejavascript/inputresponse-alpha-client) to enable or archive:
 
