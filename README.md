@@ -95,9 +95,9 @@ See client-side [inputresponse-alpha-client](https://github.com/nodejavascript/i
 
 
 - [Memory](https://github.com/nodejavascript/inputresponse-alpha-api/blob/master/src/resolvers/memory.js)
- - memoryNeuralNetworksAdmin
- - memoryNeuralNetworks
- - trainNeuralNetwork
+  - memoryNeuralNetworksAdmin
+  - memoryNeuralNetworks
+  - trainNeuralNetwork
 
 
 - [Clients](https://github.com/nodejavascript/inputresponse-alpha-api/blob/master/src/resolvers/samplingclient.js)
@@ -133,10 +133,9 @@ More about my insights will follow [my article](https://nodejavascript.com/a-neu
 
 <!-- GETTING STARTED -->
 ## Getting Started
-Use [NodeJS](https://github.com/nodejs) to run your own running API [inputresponse-alpha-api GGGG](https://github.com/nodejavascript/inputresponse-alpha-api)
+Use [NodeJS](https://github.com/nodejs) to run your own running API [inputresponse-alpha-api](https://github.com/nodejavascript/inputresponse-alpha-api)
 
-- This client was developed as an open-source utility for its [GraphQL API gggggg](https://github.com/nodejavascript/inputresponse-alpha-api).
-- This client uses Google Auth [here](https://github.com/nodejavascript/inputresponse-alpha-api/blob/master/src/components/Login.js#L13), [here](https://github.com/nodejavascript/inputresponse-alpha-api/blob/master/src/models/Auth.js#L10) and [here gggg](https://github.com/nodejavascript/inputresponse-alpha-api/blob/master/src/logic/googleauth.js#L5) to [tokenize](https://github.com/nodejavascript/inputresponse-alpha-api/blob/master/src/lib/apolloclient.js#L34-L50) some API requests.
+[inputresponse-alpha-client](https://github.com/nodejavascript/inputresponse-alpha-client) was developed as an open-source utility for its project and uses Google Auth [here](https://github.com/nodejavascript/inputresponse-alpha-api/blob/master/src/components/Login.js#L13), [here](https://github.com/nodejavascript/inputresponse-alpha-api/blob/master/src/models/Auth.js#L10) and [here](https://github.com/nodejavascript/inputresponse-alpha-api/blob/master/src/logic/googleauth.js#L5) to [verify](https://github.com/nodejavascript/inputresponse-alpha-api/blob/master/src/logic/authentication.js#L13) some API requests.
 
 This project is not stripped of:
 - legacy code nor seemingly deprecated code that remains commented
@@ -162,7 +161,7 @@ Contributions are welcome.
 <!-- LICENSE -->
 ## License
 
-See [LICENSE](https://github.com/nodejavascript/inputresponse-alpha-api/blob/main/LICENSE) for more information.
+See [LICENSE](https://github.com/nodejavascript/inputresponse-alpha-api/blob/master/LICENSE) for more information.
 
 <!-- CONTACT -->
 ## Contact
@@ -191,6 +190,6 @@ See [LICENSE](https://github.com/nodejavascript/inputresponse-alpha-api/blob/mai
 [issues-shield]: https://img.shields.io/github/issues/nodejavascript/inputresponse-alpha-api.svg?style=plastic
 [issues-url]: https://github.com/nodejavascript/inputresponse-alpha-api/issues
 [license-shield]: https://img.shields.io/github/license/nodejavascript/inputresponse-alpha-api.svg?style=plastic
-[license-url]: https://github.com/nodejavascript/inputresponse-alpha-api/blob/master/LICENSE.txt
+[license-url]: https://github.com/nodejavascript/inputresponse-alpha-api/blob/master/LICENSE
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg??style=social&logo=appveyor
 [linkedin-url]: https://linkedin.com/in/georgefielder
