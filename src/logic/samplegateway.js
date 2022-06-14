@@ -3,10 +3,10 @@ import { NeuralNetwork, SamplingClient } from '../models'
 import { expiresSeconds, redisKey, redisSet, redisGet, redisDelete } from '../lib'
 import { returnTrustedUser, findDocument } from './'
 
-const { APIKEY_CACHE_PREFIX, SAMPLING_CLIENT_CACHE_PREFIX, SAMPLING_CLIENT_CACHE_EXPIRES_SECONDS } = process.env
+const { REDIS_CACHE_PREFIX_APIKEY, REDIS_CACHE_PREFIX_SAMPLING_CLIENT, REDIS_CACHE_EXPIRES_SECONDS_SAMPLING_CLIENT } = process.env
 
 export const returnNewModelSample = async (req, insertModelSampleInput) => {
-  const { apiKey, samplingclientId: suspectSamplingclientId } = insertModelSampleInput
+  const { apiKey, samplingclientId: suspectSamplingClientId } = insertModelSampleInput
 
   const modelSample = {
     ...insertModelSampleInput
@@ -14,7 +14,7 @@ export const returnNewModelSample = async (req, insertModelSampleInput) => {
 
   const [cacheUserNN, cacheSamplingClient] = await Promise.all([
     returnCachedUserNN(apiKey),
-    returnCachedSamplingClient(suspectSamplingclientId)
+    returnCachedSamplingClient(suspectSamplingClientId)
   ])
 
   if (cacheSamplingClient) {
@@ -35,7 +35,7 @@ export const returnNewModelSample = async (req, insertModelSampleInput) => {
 
   const [neuralnetworkId, samplingclientId] = await Promise.all([
     !modelSample.neuralnetworkId && returnNeuralnetworkId(modelSample.userId, apiKey),
-    !modelSample.samplingclientId && returnSamplingclientId(modelSample.userId, suspectSamplingclientId)
+    !modelSample.samplingclientId && returnSamplingClientId(modelSample.userId, suspectSamplingClientId)
   ])
 
   if (neuralnetworkId) {
@@ -61,28 +61,28 @@ const returnNeuralnetworkId = async (userId, apiKey) => {
   return neuralnetworkId
 }
 
-const returnSamplingclientId = async (userId, suspectSamplingclientId) => {
-  await SamplingClient.ensureValid({ userId, _id: suspectSamplingclientId })
-  setCacheSamplingClient(suspectSamplingclientId, { userId, samplingclientId: suspectSamplingclientId }, SAMPLING_CLIENT_CACHE_EXPIRES_SECONDS)
-  return suspectSamplingclientId
+const returnSamplingClientId = async (userId, suspectSamplingClientId) => {
+  await SamplingClient.ensureValid({ userId, _id: suspectSamplingClientId })
+  setCacheSamplingClient(suspectSamplingClientId, { userId, samplingclientId: suspectSamplingClientId }, REDIS_CACHE_EXPIRES_SECONDS_SAMPLING_CLIENT)
+  return suspectSamplingClientId
 }
 
 export const returnCachedUserNN = async apiKey => {
-  const cache = await redisGet(returnName(APIKEY_CACHE_PREFIX, apiKey))
+  const cache = await redisGet(returnName(REDIS_CACHE_PREFIX_APIKEY, apiKey))
   return cache && JSON.parse(cache)
 }
 
 export const returnCachedSamplingClient = async clientId => {
-  const cache = await redisGet(returnName(SAMPLING_CLIENT_CACHE_PREFIX, clientId))
+  const cache = await redisGet(returnName(REDIS_CACHE_PREFIX_SAMPLING_CLIENT, clientId))
   return cache && JSON.parse(cache)
 }
 
-export const setCacheUserNN = async (apiKey, modelSampleCache, expiresInSeconds) => redisSet(returnName(APIKEY_CACHE_PREFIX, apiKey), JSON.stringify(modelSampleCache), expiresInSeconds)
+export const setCacheUserNN = async (apiKey, modelSampleCache, expiresInSeconds) => redisSet(returnName(REDIS_CACHE_PREFIX_APIKEY, apiKey), JSON.stringify(modelSampleCache), expiresInSeconds)
 
-export const setCacheSamplingClient = async (samplingclientId, samplingClientCache, expiresInSeconds) => redisSet(returnName(SAMPLING_CLIENT_CACHE_PREFIX, samplingclientId), JSON.stringify(samplingClientCache), expiresInSeconds)
+export const setCacheSamplingClient = async (samplingclientId, samplingClientCache, expiresInSeconds) => redisSet(returnName(REDIS_CACHE_PREFIX_SAMPLING_CLIENT, samplingclientId), JSON.stringify(samplingClientCache), expiresInSeconds)
 
-export const deleteCacheUserNN = async apiKey => redisDelete(returnName(APIKEY_CACHE_PREFIX, apiKey))
+export const deleteCacheUserNN = async apiKey => redisDelete(returnName(REDIS_CACHE_PREFIX_APIKEY, apiKey))
 
-export const deleteCacheSamplingClient = async samplingclientId => redisDelete(returnName(SAMPLING_CLIENT_CACHE_PREFIX, samplingclientId))
+export const deleteCacheSamplingClient = async samplingclientId => redisDelete(returnName(REDIS_CACHE_PREFIX_SAMPLING_CLIENT, samplingclientId))
 
 const returnName = (prefix, id) => redisKey(id, prefix)

@@ -6,9 +6,9 @@ import { validateGoogleUser } from '../validation'
 import { redisKey, redisSet, redisGet } from '../lib'
 import { verifyGoogleToken, createDocument, findDocument, updateDocument } from './'
 
-const { NODE_ENV, ADMIN_GOOGLEID, GOOGLE_USER_CACHE_PREFIX, GOOGLE_USER_CACHE_EXPIRES_SECONDS } = process.env
+const { NODE_ENV, ADMIN_GOOGLEID, REDIS_CACHE_PREFIX_GOOGLE_USER, REDIS_CACHE_EXPIRES_SECONDS_GOOGLE_USER } = process.env
 
-const returnName = idToken => redisKey(idToken, GOOGLE_USER_CACHE_PREFIX)
+const returnName = idToken => redisKey(idToken, REDIS_CACHE_PREFIX_GOOGLE_USER)
 
 export const returnTrustedUser = async req => {
   // this is built to favour zero-trust
@@ -79,4 +79,4 @@ const returnCachedUser = async idToken => {
   return cache && JSON.parse(cache)
 }
 
-const cacheUser = async (idToken, user) => redisSet(returnName(idToken), JSON.stringify(user), GOOGLE_USER_CACHE_EXPIRES_SECONDS)
+const cacheUser = async (idToken, user) => redisSet(returnName(idToken), JSON.stringify(user), REDIS_CACHE_EXPIRES_SECONDS_GOOGLE_USER)

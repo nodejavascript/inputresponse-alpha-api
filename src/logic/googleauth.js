@@ -2,10 +2,10 @@ import { AuthenticationError } from 'apollo-server-express'
 
 import { OAuth2Client } from 'google-auth-library'
 
-const { REACT_APP_GOOGLE_CLIENTID } = process.env
+const { CLIENT_APP_GOOGLE_CLIENTID } = process.env
 
-const client = new OAuth2Client(REACT_APP_GOOGLE_CLIENTID)
-const audience = REACT_APP_GOOGLE_CLIENTID
+const client = new OAuth2Client(CLIENT_APP_GOOGLE_CLIENTID)
+const audience = CLIENT_APP_GOOGLE_CLIENTID
 
 export const verifyGoogleToken = async idToken => {
   try {
