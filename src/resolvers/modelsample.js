@@ -40,6 +40,7 @@ export default {
 
       const modelSample = await returnNewModelSample(req, insertModelSampleInput)
 
+      // !!NEXT - if same is enabled, re train model and provide AI `guess`, `run`, svg, etc...
       return createDocument(ModelSample, modelSample)
     },
     updateModelSample: async (root, args, { req, res }, info) => {
@@ -49,6 +50,8 @@ export default {
       const { modelsampleId } = updateModelSampleInput
 
       await returnValidUserModelSample(req, modelsampleId)
+
+      // do not automatically train
 
       return updateDocument(ModelSample, modelsampleId, updateModelSampleInput)
     }

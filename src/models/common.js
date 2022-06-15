@@ -27,23 +27,13 @@ export const createVirtuals = (schema, commonName) => {
 }
 
 export const createStatics = (schema, commonName) => {
-  schema.statics.ensureNotExists = async function (options) {
-    const ensureNotExists = await this.where(options).countDocuments() > 0
-    if (ensureNotExists) throw new UserInputError(`${commonName} already exists`)
-  }
-
   schema.statics.ensureValid = async function (options) {
-    const notValid = await this.where({ ...options }).countDocuments() === 0
+    const notValid = await this.where(options).countDocuments() === 0
     if (notValid) throw new UserInputError(`${commonName} is not valid`)
   }
 
-  schema.statics.doesExist = async function (options) {
-    const doesExist = await this.where(options).countDocuments() > 0
-    return !!doesExist
-  }
-
   schema.statics.returnCount = async function (options) {
-    return this.where(options).countDocuments() || 0
+    return this.where(options).countDocuments(options) || 0
   }
 
   return schema
