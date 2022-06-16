@@ -62,7 +62,7 @@ neuralNetworkSchema.virtual('apiKeyExpiresUnix').get(function () {
 // blocking
 neuralNetworkSchema.virtual('modelSize').get(function () {
   const { _id: neuralnetworkId } = this
-  return ModelSample.returnCount({ neuralnetworkId })
+  return ModelSample.returnCount({ neuralnetworkId, enabled: true })
 })
 
 const NeuralNetwork = connectDatabase().model(commonName, neuralNetworkSchema, 'neuralnetwork')

@@ -32,7 +32,7 @@ createStatics(samplingClientSchema, commonName)
 // blocking
 samplingClientSchema.virtual('modelSize').get(async function () {
   const { _id: samplingclientId } = this
-  return ModelSample.returnCount({ samplingclientId })
+  return ModelSample.returnCount({ samplingclientId, enabled: true })
 })
 
 const SamplingClient = connectDatabase().model(commonName, samplingClientSchema, 'samplingclient')

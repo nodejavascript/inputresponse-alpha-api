@@ -31,7 +31,7 @@ export const returnUserNeuralNeworks = async req => {
 }
 
 export const returnUserNeuralNeworkModel = async neuralnetworkId => {
-  const modelsamples = await findDocuments(ModelSample, { neuralnetworkId }, 'input output')
+  const modelsamples = await findDocuments(ModelSample, { neuralnetworkId, enabled: true }, 'input output')
   return modelsamples.map(({ input, output }) => ({ input, output }))
 }
 
