@@ -8,7 +8,7 @@ export default gql`
   }
 
   extend type Mutation {
-    trainNeuralNetwork (trainNeuralNetworkInput: TrainNeuralNetworkInput!): TrainingHistory @authenticated
+    trainNeuralNetwork (trainNeuralNetworkInput: TrainNeuralNetworkInput!):  NeuralNetwork @authenticated
   }
 
   input TrainNeuralNetworkInput {

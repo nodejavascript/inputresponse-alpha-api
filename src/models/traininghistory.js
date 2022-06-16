@@ -14,7 +14,24 @@ export const trainingHistorySchema = new Schema(
       ref: 'NeuralNetwork',
       sparse: true
     },
+    modelsampleIds: [{
+      type: ObjectId,
+      ref: 'ModelSample'
+    }],
+    samplingclientIds: [{
+      type: ObjectId,
+      ref: 'SamplingClient'
+    }],
     modelSize: {
+      type: Number
+    },
+    inputSize: {
+      type: Number
+    },
+    inputRange: {
+      type: Number
+    },
+    outputSize: {
       type: Number
     },
     trainingMs: {

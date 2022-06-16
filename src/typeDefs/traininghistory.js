@@ -6,7 +6,14 @@ export default gql`
     ${commonToCoreQueries}
 
     neuralnetworkId: String
+    modelsampleIds: [String]
+    samplingclientId: [String]
+
     modelSize: Int
+    inputSize: Int
+    inputRange: Int
+    outputSize: Int
+
     trainingMs: Int
     samplesPerSecond: Float
 

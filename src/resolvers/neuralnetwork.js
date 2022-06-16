@@ -31,8 +31,11 @@ export const returnUserNeuralNeworks = async req => {
 }
 
 export const returnUserNeuralNeworkModel = async neuralnetworkId => {
-  const modelsamples = await findDocuments(ModelSample, { neuralnetworkId, enabled: true }, 'input output')
-  return modelsamples.map(({ input, output }) => ({ input, output }))
+  const modelsamples = await findDocuments(ModelSample, { neuralnetworkId, enabled: true })
+
+  const model = modelsamples.map(({ input, output }) => ({ input, output }))
+  const meta = modelsamples.map(({ id, samplingclientId }) => ({ id, samplingclientId }))
+  return { model, meta }
 }
 
 export default {
@@ -56,7 +59,7 @@ export default {
 
       const { neuralnetworkId } = neuralNetworkModelInput
 
-      const [{ userId }, model] = await Promise.all([
+      const [{ userId }, { model }] = await Promise.all([
         returnEnabedUserNeuralNetwork(req, neuralnetworkId),
         returnUserNeuralNeworkModel(neuralnetworkId)
       ])

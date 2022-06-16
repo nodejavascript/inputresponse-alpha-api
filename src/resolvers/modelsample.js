@@ -41,7 +41,7 @@ export default {
       const modelSample = await returnNewModelSample(req, insertModelSampleInput)
 
       // !!NEXT - if same is enabled, re train model and provide AI `guess`, `run`, svg, etc...
-      return createDocument(ModelSample, modelSample)
+      await createDocument(ModelSample, modelSample)
     },
     updateModelSample: async (root, args, { req, res }, info) => {
       const { updateModelSampleInput } = args

@@ -60,7 +60,7 @@ neuralNetworkSchema.virtual('apiKeyExpiresUnix').get(function () {
 })
 
 // blocking
-neuralNetworkSchema.virtual('modelSize').get(function () {
+neuralNetworkSchema.virtual('modelSize').get(async function () {
   const { _id: neuralnetworkId } = this
   return ModelSample.returnCount({ neuralnetworkId, enabled: true })
 })
