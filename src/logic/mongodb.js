@@ -1,5 +1,5 @@
 export const findDocuments = async (model, query = {}, select) => {
-  return model.find(query).sort({ updatedAt: -1, order: 1 }).select(select)
+  return model.find({ ...query, archived: { $ne: true } }).sort({ updatedAt: -1, order: 1 }).select(select)
 }
 
 export const findDocument = async (model, query = {}, select) => {
