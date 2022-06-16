@@ -15,7 +15,7 @@ export default {
 
       const [user] = await Promise.all([
         findDocument(User, query),
-        User.ensureValid(query)
+        User.ensureEnabed(query)
       ])
 
       return user

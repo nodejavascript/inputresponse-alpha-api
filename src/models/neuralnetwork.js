@@ -44,19 +44,19 @@ neuralNetworkSchema.virtual('apiKeyExpired').get(function () {
 })
 
 neuralNetworkSchema.virtual('apiKeyCreatedAgo').get(function () {
-  return fromNow(this.apiKeyCreated)
+  return this.apiKeyCreated ? fromNow(this.apiKeyCreated) : 'never'
 })
 
 neuralNetworkSchema.virtual('apiKeyCreatedUnix').get(function () {
-  return toUnix(this.apiKeyCreated)
+  return this.apiKeyCreated ? toUnix(this.apiKeyCreated) : 'never'
 })
 
 neuralNetworkSchema.virtual('apiKeyExpiresAgo').get(function () {
-  return fromNow(this.apiKeyExpires)
+  return this.apiKeyExpires ? fromNow(this.apiKeyExpires) : 'never'
 })
 
 neuralNetworkSchema.virtual('apiKeyExpiresUnix').get(function () {
-  return toUnix(this.apiKeyExpires)
+  return this.apiKeyExpires ? toUnix(this.apiKeyExpires) : 'never'
 })
 
 // blocking

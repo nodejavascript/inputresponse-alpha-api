@@ -27,8 +27,8 @@ export const createVirtuals = (schema, commonName) => {
 }
 
 export const createStatics = (schema, commonName) => {
-  schema.statics.ensureValid = async function (options) {
-    const notValid = await this.where(options).countDocuments() === 0
+  schema.statics.ensureEnabed = async function (options) {
+    const notValid = await this.where({ ...options, enabled: true }).countDocuments() === 0
     if (notValid) throw new UserInputError(`${commonName} is not valid`)
   }
 

@@ -3,12 +3,12 @@ import { validateInsertSamplingClientInput, validateUpdateSamplingClientInput, v
 import { returnTrustedUser, deleteCacheSamplingClient, findDocuments, createDocument, updateDocument, findDocument } from '../logic'
 import { dayjsDefaultFormat } from '../lib'
 
-const returnValidUserSamplingClient = async (req, _id) => {
+const returnEnabledUserSamplingClient = async (req, _id) => {
   const { id: userId } = await returnTrustedUser(req)
   const query = { _id, userId }
   const [samplingclient] = await Promise.all([
     findDocument(SamplingClient, query),
-    SamplingClient.ensureValid(query)
+    SamplingClient.ensureEnabed(query)
   ])
 
   return samplingclient
@@ -27,7 +27,7 @@ export default {
 
       const { samplingclientId } = querySamplingClientInput
 
-      return returnValidUserSamplingClient(req, samplingclientId)
+      return returnEnabledUserSamplingClient(req, samplingclientId)
     }
   },
   Mutation: {
@@ -54,7 +54,7 @@ export default {
 
       const { samplingclientId } = updateSamplingClientInput
 
-      await returnValidUserSamplingClient(req, samplingclientId)
+      await returnEnabledUserSamplingClient(req, samplingclientId)
 
       deleteCacheSamplingClient(samplingclientId)
 

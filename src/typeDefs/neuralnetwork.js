@@ -59,6 +59,8 @@ export default gql`
   input RequestNewApiKeyInput {
     neuralnetworkId: ID
     apiKeyExpires: String
+    resetApiKey: Boolean
+    deleteExpiry: Boolean
   }
 
   input NeuralNetworkModelInput {

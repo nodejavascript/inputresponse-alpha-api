@@ -6,7 +6,7 @@ import { validateTrainNeuralNetworkInput } from '../validation'
 import { getTickCount } from '../lib'
 import { updateDocument, createDocument } from '../logic'
 // import { returnTrustedUser, deleteCacheUserNN, findDocuments, createDocument, updateDocument, findDocument } from '../logic'
-import { returnUserNeuralNeworks, returnValidUserNeuralNetwork, returnUserNeuralNeworkModel } from './neuralnetwork'
+import { returnUserNeuralNeworks, returnEnabedUserNeuralNetwork, returnUserNeuralNeworkModel } from './neuralnetwork'
 
 const memoryNeuralNetworks = []
 
@@ -80,7 +80,7 @@ export default {
 
       const { neuralnetworkId } = trainNeuralNetworkInput
 
-      const neuralnetwork = await returnValidUserNeuralNetwork(req, neuralnetworkId)
+      const neuralnetwork = await returnEnabedUserNeuralNetwork(req, neuralnetworkId)
 
       const modelSize = await neuralnetwork.modelSize
 

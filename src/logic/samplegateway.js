@@ -62,7 +62,7 @@ const returnNeuralnetworkId = async (userId, apiKey) => {
 }
 
 const returnSamplingClientId = async (userId, suspectSamplingClientId) => {
-  await SamplingClient.ensureValid({ userId, _id: suspectSamplingClientId })
+  await SamplingClient.ensureEnabed({ userId, _id: suspectSamplingClientId })
   setCacheSamplingClient(suspectSamplingClientId, { userId, samplingclientId: suspectSamplingClientId }, REDIS_CACHE_EXPIRES_SECONDS_SAMPLING_CLIENT)
   return suspectSamplingClientId
 }

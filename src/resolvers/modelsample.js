@@ -1,17 +1,17 @@
 import { User, NeuralNetwork, SamplingClient, ModelSample } from '../models'
 import { validateInsertModelSampleInput, validateUpdateModelSampleInput, validateQueryModelSampleInput } from '../validation'
 import { returnNewModelSample, returnTrustedUser, findDocuments, createDocument, findDocument, updateDocument } from '../logic'
-import { returnValidUserNeuralNetwork } from './neuralnetwork'
+import { returnEnabedUserNeuralNetwork } from './neuralnetwork'
 
-const returnValidUserModelSample = async (req, _id) => {
+const returnEnabledUserModelSample = async (req, _id) => {
   const query = { _id }
   const [modelsample] = await Promise.all([
     findDocument(ModelSample, query),
-    ModelSample.ensureValid(query)
+    ModelSample.ensureEnabed(query)
   ])
 
   const { neuralnetworkId } = modelsample
-  await returnValidUserNeuralNetwork(req, neuralnetworkId)
+  await returnEnabedUserNeuralNetwork(req, neuralnetworkId)
 
   return modelsample
 }
@@ -29,7 +29,7 @@ export default {
 
       const { modelsampleId } = queryModelSampleInput
 
-      return returnValidUserModelSample(req, modelsampleId)
+      return returnEnabledUserModelSample(req, modelsampleId)
     }
   },
   Mutation: {
@@ -49,7 +49,7 @@ export default {
       await validateUpdateModelSampleInput.validateAsync(updateModelSampleInput, { abortEarly: false })
       const { modelsampleId } = updateModelSampleInput
 
-      await returnValidUserModelSample(req, modelsampleId)
+      await returnEnabledUserModelSample(req, modelsampleId)
 
       // do not automatically train
 

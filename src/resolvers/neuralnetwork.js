@@ -11,23 +11,19 @@ export const returnApiKeyExpired = neuralnetwork => {
   return checkExpired(apiKeyExpires)
 }
 
-export const returnValidUserNeuralNetwork = async (req, _id) => {
+export const returnEnabedUserNeuralNetwork = async (req, _id) => {
   const { id: userId } = await returnTrustedUser(req)
   const query = { _id, userId }
 
   const [neuralnetwork] = await Promise.all([
     findDocument(NeuralNetwork, query),
-    NeuralNetwork.ensureValid(query)
+    NeuralNetwork.ensureEnabed(query)
   ])
 
   return neuralnetwork
 }
 
-const returnApiKeyObject = apiKeyExpires => {
-  const apiKey = return4ByteKey()
-  const apiKeyCreated = new Date()
-  return { apiKey, apiKeyCreated, apiKeyExpires }
-}
+const returnNewApiKey = apiKeyExpires => return4ByteKey()
 
 export const returnUserNeuralNeworks = async req => {
   const { id: userId } = await returnTrustedUser(req)
@@ -51,7 +47,7 @@ export default {
 
       const { neuralnetworkId } = queryNeuralNetworkInput
 
-      return returnValidUserNeuralNetwork(req, neuralnetworkId)
+      return returnEnabedUserNeuralNetwork(req, neuralnetworkId)
     },
     neuralNetworkModel: async (root, args, { req, res }, info) => {
       const { neuralNetworkModelInput } = args
@@ -61,7 +57,7 @@ export default {
       const { neuralnetworkId } = neuralNetworkModelInput
 
       const [{ userId }, model] = await Promise.all([
-        returnValidUserNeuralNetwork(req, neuralnetworkId),
+        returnEnabedUserNeuralNetwork(req, neuralnetworkId),
         returnUserNeuralNeworkModel(neuralnetworkId)
       ])
 
@@ -81,7 +77,10 @@ export default {
 
       await validateInsertNeuralNetworkInput.validateAsync(insertNeuralNetworkInput, { abortEarly: false })
 
-      return createDocument(NeuralNetwork, { ...insertNeuralNetworkInput, ...returnApiKeyObject() })
+      const apiKey = returnNewApiKey()
+      const apiKeyCreated = new Date()
+
+      return createDocument(NeuralNetwork, { ...insertNeuralNetworkInput, apiKey, apiKeyCreated })
     },
     updateNeuralNetwork: async (root, args, { req, res }, info) => {
       const { updateNeuralNetworkInput } = args
@@ -90,7 +89,7 @@ export default {
 
       const { neuralnetworkId } = updateNeuralNetworkInput
 
-      await returnValidUserNeuralNetwork(req, neuralnetworkId)
+      await returnEnabedUserNeuralNetwork(req, neuralnetworkId)
 
       return updateDocument(NeuralNetwork, neuralnetworkId, updateNeuralNetworkInput)
     },
@@ -99,9 +98,9 @@ export default {
 
       await validateRequestNewApiKeyInput.validateAsync(requestNewApiKeyInput, { abortEarly: false })
 
-      const { neuralnetworkId, apiKeyExpires } = requestNewApiKeyInput
+      const { neuralnetworkId, resetApiKey, deleteExpiry } = requestNewApiKeyInput
 
-      const neuralnetwork = await returnValidUserNeuralNetwork(req, neuralnetworkId)
+      const neuralnetwork = await returnEnabedUserNeuralNetwork(req, neuralnetworkId)
 
       const { apiKey } = neuralnetwork
 
@@ -109,7 +108,16 @@ export default {
         await deleteCacheUserNN(apiKey)
       }
 
-      return updateDocument(NeuralNetwork, neuralnetworkId, returnApiKeyObject(apiKeyExpires))
+      const apiKeyExpires = deleteExpiry ? null : requestNewApiKeyInput.apiKeyExpires
+
+      const update = { apiKeyExpires }
+
+      if (resetApiKey) {
+        update.apiKey = returnNewApiKey()
+        update.apiKeyCreated = new Date()
+      }
+
+      return updateDocument(NeuralNetwork, neuralnetworkId, update)
     }
   },
   NeuralNetwork: {
