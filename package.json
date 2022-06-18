@@ -39,6 +39,7 @@
   "internal-ip": "^6.2.0",
   "joi": "^17.6.0",
   "mongoose": "^6.2.9",
+  "node-json-equal": "^0.1.0",
   "pug": "^3.0.2",
   "redis": "^3.0.2",
   "uuidv4": "^6.2.13"

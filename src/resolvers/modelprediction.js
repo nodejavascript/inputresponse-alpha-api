@@ -41,12 +41,9 @@ export default {
 
       const newRecord = await validateApiSubmission(req, insertModelPredictionInput)
 
-      const modelpredictionPretrained = await createDocument(ModelPrediction, newRecord)
+      const { id: modelpredictionId, neuralnetworkId, input } = await createDocument(ModelPrediction, newRecord)
 
-      const { id: modelpredictionId, neuralnetworkId, input, enabled } = modelpredictionPretrained
-
-      if (!enabled) return modelpredictionPretrained
-
+      // left here for later. do not train if already trained?
       const neuralnetwork = await trainMemoryNeuralNetwork(req, neuralnetworkId, info)
 
       return returnPredictionMemoryNeuralNetwork({ modelpredictionId, input, neuralnetwork })
@@ -60,12 +57,9 @@ export default {
 
       await returnEnabledUserModelPrediction(req, modelpredictionId)
 
-      const modelpredictionPretrained = await updateDocument(ModelPrediction, modelpredictionId, { input })
+      const { neuralnetworkId } = await updateDocument(ModelPrediction, modelpredictionId, { input })
 
-      const { neuralnetworkId, enabled } = modelpredictionPretrained
-
-      if (!enabled) return modelpredictionPretrained
-
+      // left here for later. do not train if already trained?
       const neuralnetwork = await trainMemoryNeuralNetwork(req, neuralnetworkId, info)
 
       return returnPredictionMemoryNeuralNetwork({ modelpredictionId, input, neuralnetwork })

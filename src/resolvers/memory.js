@@ -1,5 +1,6 @@
 import { UserInputError } from 'apollo-server-express'
 import * as brain from 'brain.js'
+// import jsonEqual from 'node-json-equal'
 
 import { NeuralNetwork, TrainingHistory, ModelPrediction } from '../models'
 import { validateTrainNeuralNetworkInput } from '../validation'
@@ -8,7 +9,19 @@ import { updateDocument, createDocument } from '../logic'
 // import { returnTrustedUser, deleteCacheUserNN, findDocuments, createDocument, updateDocument, findDocument } from '../logic'
 import { returnUserNeuralNeworks, returnEnabedUserNeuralNetwork, returnUserNeuralNeworkModel } from './neuralnetwork'
 
-const memoryNeuralNetworks = []
+export const memoryNeuralNetworks = []
+
+// export const trainMemoryNeuralNetworkIfNecessary = (neuralnetworkId, enabled, newInput, originalInput = { }) => {
+//   const found = memoryNeuralNetworks.find(i => i.neuralnetworkId === neuralnetworkId.toString())
+//   const input = JSON.parse(JSON.stringify(newInput))
+//   console.log('newInput', newInput)
+//   console.log('originalInput', originalInput)
+//   const changes = !jsonEqual(input, originalInput)
+//   console.log('enabled', enabled)
+//   console.log('found', found)
+//   console.log('changes', changes)
+//   if (!enabled && found && !changes) return findDocument(NeuralNetwork, { _id: neuralnetworkId })
+// }
 
 export const returnMemoryNeuralNetwork = neuralnetworkId => {
   return memoryNeuralNetworks.find(i => i.neuralnetworkId === neuralnetworkId.toString())
