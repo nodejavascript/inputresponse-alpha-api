@@ -36,7 +36,7 @@ export default {
   Mutation: {
     insertModelPrediction: async (root, args, { req, res }, info) => {
       const { insertModelPredictionInput } = args
-
+      console.log('insertModelPredictionInput', insertModelPredictionInput)
       await validateInsertModelPredictionInput.validateAsync(insertModelPredictionInput, { abortEarly: false })
 
       const newRecord = await validateApiSubmission(req, insertModelPredictionInput)
@@ -47,7 +47,7 @@ export default {
     },
     updateModelPrediction: async (root, args, { req, res }, info) => {
       const { updateModelPredictionInput } = args
-
+      console.log('updateModelPredictionInput', updateModelPredictionInput)
       await validateUpdateModelPredictionInput.validateAsync(updateModelPredictionInput, { abortEarly: false })
       const { modelpredictionId } = updateModelPredictionInput
 

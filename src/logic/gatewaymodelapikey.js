@@ -1,9 +1,22 @@
 import { AuthenticationError } from 'apollo-server-express'
 import { NeuralNetwork, SamplingClient } from '../models'
-import { expiresSeconds, redisKey, redisSet, redisGet, redisDelete } from '../lib'
+import { expiresSeconds, redisKey, redisSet, redisGet, redisDelete, redisKeys } from '../lib'
 import { returnTrustedUser, findDocument } from './'
 
 const { REDIS_CACHE_PREFIX_APIKEY, REDIS_CACHE_PREFIX_SAMPLING_CLIENT, REDIS_CACHE_EXPIRES_SECONDS_SAMPLING_CLIENT } = process.env
+
+const keysToClear = ['APIKEY']
+
+export const clearRedisKeys = async () => {
+  await Promise.all(
+    keysToClear.map(async prefix => {
+      const keys = await redisKeys(prefix)
+      await Promise.all(
+        keys.map(async key => redisDelete(key))
+      )
+    })
+  )
+}
 
 export const validateApiSubmission = async (req, input) => {
   const { apiKey, samplingclientId: suspectSamplingClientId } = input

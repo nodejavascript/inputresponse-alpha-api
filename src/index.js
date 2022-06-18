@@ -13,6 +13,7 @@ import typeDefs from './typeDefs'
 import resolvers from './resolvers'
 import schemaDirectives from './directives'
 import { launchMongo, createDockerVolume, connectToRedis } from './lib'
+import { clearRedisKeys } from './logic'
 
 const { json } = express
 
@@ -32,6 +33,8 @@ export const startGraphQLServer = async () => {
       createDockerVolume(), // uses DOCKER_VOLUME
       connectToRedis()
     ])
+
+    await clearRedisKeys()
 
     const app = express()
 

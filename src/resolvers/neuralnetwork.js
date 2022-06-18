@@ -107,9 +107,7 @@ export default {
 
       const { apiKey } = neuralnetwork
 
-      if (apiKey) {
-        await deleteCacheUserNN(apiKey)
-      }
+      await deleteCacheUserNN(apiKey)
 
       const apiKeyExpires = deleteExpiry ? null : requestNewApiKeyInput.apiKeyExpires
 
