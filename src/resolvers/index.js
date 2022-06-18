@@ -6,6 +6,7 @@ import modelsample from './modelsample'
 import samplingclient from './samplingclient'
 import memory from './memory'
 import traininghistory from './traininghistory'
+import modelprediction from './modelprediction'
 
 export default [
   app,
@@ -15,5 +16,6 @@ export default [
   modelsample,
   samplingclient,
   memory,
-  traininghistory
+  traininghistory,
+  modelprediction
 ]
