@@ -1,4 +1,4 @@
-import { User, NeuralNetwork, SamplingClient, ModelSample, TrainingHistory } from '../models'
+import { User, NeuralNetwork, SamplingClient, ModelSample, TrainingHistory, ModelPrediction } from '../models'
 import { validateInsertNeuralNetworkInput, validateUpdateNeuralNetworkInput, validateRequestNewApiKeyInput, validateNeuralNetworkModelInput, validateQueryNeuralNetworkInput } from '../validation'
 import { returnTrustedUser, deleteCacheUserNN, findDocuments, createDocument, updateDocument, findDocument } from '../logic'
 import { dayjsDefaultFormat, return4ByteKey, checkExpired } from '../lib'
@@ -139,9 +139,17 @@ export default {
       const { id: neuralnetworkId } = neuralnetwork
       return returnMemoryNeuralNetwork(neuralnetworkId)
     },
+    lastTrainingHistory: async (neuralnetwork, args, { req, res }, info) => {
+      const { lastTraininghistoryId: _id } = neuralnetwork
+      return findDocument(TrainingHistory, { _id })
+    },
     trainingHistory: async (neuralnetwork, args, { req, res }, info) => {
       const { id: neuralnetworkId } = neuralnetwork
       return findDocuments(TrainingHistory, { neuralnetworkId })
+    },
+    modelPredictions: async (neuralnetwork, args, { req, res }, info) => {
+      const { id: neuralnetworkId } = neuralnetwork
+      return findDocuments(ModelPrediction, { neuralnetworkId })
     }
   }
 }

@@ -24,13 +24,20 @@ const modelPredictionSchema = new Schema(
       ref: 'SamplingClient',
       sparse: true
     },
+    traininghistoryId: {
+      type: ObjectId,
+      ref: 'TrainingHistory'
+    },
+    input: {},
     diagram: {
-      type: String,
-      trim: true
+      type: String
     },
     likely: {},
     guess: {},
-    toJSON: {}
+    toJSON: {},
+    predictionMs: {
+      type: Number
+    }
   },
   {
     timestamps: true,

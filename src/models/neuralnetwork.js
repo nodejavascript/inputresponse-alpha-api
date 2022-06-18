@@ -3,7 +3,6 @@ import { ModelSample } from './'
 import { connectDatabase, fromNow, toUnix } from '../lib'
 import { returnApiKeyExpired } from '../resolvers/neuralnetwork'
 import { createVirtuals, createStatics, commonToCoreSchemas } from './common'
-import { trainingHistorySchema } from './traininghistory'
 
 const commonName = 'NeuralNetwork'
 
@@ -27,7 +26,10 @@ const neuralNetworkSchema = new Schema(
     apiKeyExpires: {
       type: Date
     },
-    lastTrainingHistory: trainingHistorySchema
+    lastTraininghistoryId: {
+      type: ObjectId,
+      ref: 'TrainingHistory'
+    }
   },
   {
     timestamps: true,

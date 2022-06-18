@@ -1,7 +1,7 @@
 import { UserInputError } from 'apollo-server-express'
 import * as brain from 'brain.js'
 
-import { NeuralNetwork, TrainingHistory } from '../models'
+import { NeuralNetwork, TrainingHistory, ModelPrediction } from '../models'
 import { validateTrainNeuralNetworkInput } from '../validation'
 import { getTickCount, uniqArray } from '../lib'
 import { updateDocument, createDocument } from '../logic'
@@ -25,20 +25,30 @@ const updateMemoryNeuralNetwork = (neuralnetworkId, net) => {
   }
 }
 
-export const returnPredictionMemoryNeuralNetwork = async ({ neuralnetworkId, input }) => {
+export const returnPredictionMemoryNeuralNetwork = async ({ modelpredictionId, input: inputWithBrainJSBug, neuralnetwork }) => {
+  const { id: neuralnetworkId, lastTraininghistoryId: traininghistoryId } = neuralnetwork
+
+  // solves bug in brainJS, because it can't parse [Object: null prototype] { r: 1, g: 200, b: 210 }
+  const input = JSON.parse(JSON.stringify(inputWithBrainJSBug))
+
   const { net } = createOrReturnMemoryNeuralNetwork(neuralnetworkId)
 
+  const start = getTickCount()
   const [diagram, likely, guess, toJSON] = await Promise.all([
     brain.utilities.toSVG(net),
     brain.likely(input, net),
     net.run(input),
     net.toJSON()
   ])
+  const predictionMs = getTickCount() - start
 
-  return { diagram, likely, guess, toJSON }
+  console.log('Neural Network predicted', predictionMs, 'ms')
+
+  // record already updated with good input format
+  return updateDocument(ModelPrediction, modelpredictionId, { diagram, likely, guess, toJSON, traininghistoryId, predictionMs })
 }
 
-export const trainMemoryNeuralNetwork = async (req, neuralnetworkId) => {
+export const trainMemoryNeuralNetwork = async (req, neuralnetworkId, info = { }) => {
   await returnEnabedUserNeuralNetwork(req, neuralnetworkId)
 
   const memoryNeuralNetwork = createOrReturnMemoryNeuralNetwork(neuralnetworkId)
@@ -68,20 +78,28 @@ export const trainMemoryNeuralNetwork = async (req, neuralnetworkId) => {
   const trainingResponse = await memoryNeuralNetwork.net.trainAsync(model)
   const trainingMs = getTickCount() - start
 
-  console.log('Neural Network trained', trainingMs, 'ms')
-
   const samplesPerSecond = modelSize / (trainingMs / 1000)
-  //
-  const trainingHistory = { ...trainingResponse, neuralnetworkId, modelsampleIds, samplingclientIds, modelSize, inputSize, inputRange, outputSize, trainingMs, samplesPerSecond }
+
+  const { path: operation } = info
+  const trainingHistory = {
+    ...trainingResponse,
+    neuralnetworkId,
+    modelsampleIds,
+    samplingclientIds,
+    modelSize,
+    inputSize,
+    inputRange,
+    outputSize,
+    trainingMs,
+    samplesPerSecond,
+    operation
+  }
 
   updateMemoryNeuralNetwork(neuralnetworkId, memoryNeuralNetwork.net)
 
-  const [neuralnetwork] = await Promise.all([
-    updateDocument(NeuralNetwork, neuralnetworkId, { lastTrainingHistory: trainingHistory }),
-    createDocument(TrainingHistory, trainingHistory)
-  ])
+  const { id: lastTraininghistoryId } = await createDocument(TrainingHistory, trainingHistory)
 
-  return neuralnetwork
+  return updateDocument(NeuralNetwork, neuralnetworkId, { lastTraininghistoryId })
 }
 
 export default {
@@ -103,7 +121,7 @@ export default {
 
       const { neuralnetworkId } = trainNeuralNetworkInput
 
-      return trainMemoryNeuralNetwork(req, neuralnetworkId)
+      return trainMemoryNeuralNetwork(req, neuralnetworkId, info)
     }
   }
 }

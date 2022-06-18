@@ -43,8 +43,11 @@ export default gql`
     modelSamples: [ModelSample]
 
     memoryNeuralNetwork: MemoryNeuralNetwork
+
+    lastTraininghistoryId: String
     lastTrainingHistory: TrainingHistory
     trainingHistory: [TrainingHistory]
+    modelPredictions: [ModelPrediction]
   }
 
   input InsertNeuralNetworkInput {

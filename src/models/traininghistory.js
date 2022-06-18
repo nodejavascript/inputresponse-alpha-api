@@ -45,6 +45,14 @@ export const trainingHistorySchema = new Schema(
     },
     iterations: {
       type: Number
+    },
+    operation: {
+      key: {
+        type: String
+      },
+      typename: {
+        type: String
+      }
     }
   },
   {

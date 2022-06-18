@@ -13,25 +13,25 @@ export default gql`
     updateModelPrediction (updateModelPredictionInput: UpdateModelPredictionInput!): ModelPrediction @authenticated
   }
 
-  type ModelPredictionIO {
-    input: Object
-    output: [Object]
-  }
-
   type ModelPrediction {
     ${commonToCoreQueries}
     userId: String
     neuralnetworkId: String
     samplingclientId: String
+    traininghistoryId: String
     input: Object
-    output: [Object]
-
     inputDisplay: String
-    outputDisplay: String
+
+    diagram: String
+    likely: Object
+    guess: Object
+    toJSON: Object
+    predictionMs: Int
 
     user: User
     neuralNetwork: NeuralNetwork
     samplingClient: SamplingClient
+    trainingHistory: TrainingHistory
   }
 
   input InsertModelPredictionInput {

@@ -20,5 +20,11 @@ export default gql`
     iterations: Int
 
     neuralNetwork: NeuralNetwork
+    operation: Operation
+  }
+
+  type Operation {
+    key: String
+    typename: String
   }
 `
