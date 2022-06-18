@@ -2,6 +2,7 @@ import { User, NeuralNetwork, SamplingClient, ModelSample } from '../models'
 import { validateInsertModelSampleInput, validateUpdateModelSampleInput, validateQueryModelSampleInput } from '../validation'
 import { returnNewModelSample, returnTrustedUser, findDocuments, createDocument, findDocument, updateDocument } from '../logic'
 import { returnEnabedUserNeuralNetwork } from './neuralnetwork'
+import { trainMemoryNeuralNetwork } from './memory'
 
 const returnEnabledUserModelSample = async (req, _id) => {
   const query = { _id }
@@ -41,7 +42,12 @@ export default {
       const modelSample = await returnNewModelSample(req, insertModelSampleInput)
 
       // !!NEXT - if same is enabled, re train model and provide AI `guess`, `run`, svg, etc...
-      await createDocument(ModelSample, modelSample)
+      const modelsample = await createDocument(ModelSample, modelSample)
+
+      const { neuralnetworkId, enabled } = modelsample
+      enabled && await trainMemoryNeuralNetwork(req, neuralnetworkId)
+
+      return modelsample
     },
     updateModelSample: async (root, args, { req, res }, info) => {
       const { updateModelSampleInput } = args
@@ -51,9 +57,12 @@ export default {
 
       await returnEnabledUserModelSample(req, modelsampleId)
 
-      // do not automatically train
+      const modelsample = await updateDocument(ModelSample, modelsampleId, updateModelSampleInput)
 
-      return updateDocument(ModelSample, modelsampleId, updateModelSampleInput)
+      const { neuralnetworkId, enabled } = modelsample
+      enabled && await trainMemoryNeuralNetwork(req, neuralnetworkId)
+
+      return modelsample
     }
   },
   ModelSample: {

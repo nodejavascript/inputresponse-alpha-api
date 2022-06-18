@@ -16,6 +16,8 @@ export default gql`
 
     trainingMs: Int
     samplesPerSecond: Float
+    error: Float
+    iterations: Int
 
     neuralNetwork: NeuralNetwork
   }

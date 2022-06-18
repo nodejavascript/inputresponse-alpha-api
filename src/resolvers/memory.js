@@ -14,31 +14,13 @@ export const returnMemoryNeuralNetwork = neuralnetworkId => {
   return memoryNeuralNetworks.find(i => i.neuralnetworkId === neuralnetworkId.toString())
 }
 
-const createOrReturnMemoryNeuralNetwork = neuralnetworkId => {
-  const existing = returnMemoryNeuralNetwork(neuralnetworkId)
-  if (existing) return existing
-
-  const net = new brain.NeuralNetwork()
-  const createdAt = new Date()
-
-  const memoryNeuralNetwork = {
-    neuralnetworkId,
-    net,
-    createdAt
-  }
-
-  memoryNeuralNetworks.push(memoryNeuralNetwork)
-
-  return memoryNeuralNetwork
-}
-
 const updateMemoryNeuralNetwork = (neuralnetworkId, memoryNeuralNetwork) => {
   const index = memoryNeuralNetworks.findIndex(i => i.neuralnetworkId === neuralnetworkId.toString())
 
   memoryNeuralNetworks[index] = memoryNeuralNetwork
 }
 
-const trainMemoryNeuralNetwork = async (req, neuralnetworkId) => {
+export const trainMemoryNeuralNetwork = async (req, neuralnetworkId) => {
   await returnEnabedUserNeuralNetwork(req, neuralnetworkId)
 
   const memoryNeuralNetwork = createOrReturnMemoryNeuralNetwork(neuralnetworkId)
@@ -65,12 +47,12 @@ const trainMemoryNeuralNetwork = async (req, neuralnetworkId) => {
 
   const start = getTickCount()
 
-  await memoryNeuralNetwork.net.trainAsync(model)
+  const trainingResponse = await memoryNeuralNetwork.net.trainAsync(model)
   const trainingMs = getTickCount() - start
 
   const samplesPerSecond = modelSize / (trainingMs / 1000)
   //
-  const trainingHistory = { neuralnetworkId, modelsampleIds, samplingclientIds, modelSize, inputSize, inputRange, outputSize, trainingMs, samplesPerSecond }
+  const trainingHistory = { ...trainingResponse, neuralnetworkId, modelsampleIds, samplingclientIds, modelSize, inputSize, inputRange, outputSize, trainingMs, samplesPerSecond }
 
   const update = {
     ...memoryNeuralNetwork,
@@ -109,4 +91,22 @@ export default {
       return trainMemoryNeuralNetwork(req, neuralnetworkId)
     }
   }
+}
+
+const createOrReturnMemoryNeuralNetwork = neuralnetworkId => {
+  const existing = returnMemoryNeuralNetwork(neuralnetworkId)
+  if (existing) return existing
+
+  const net = new brain.NeuralNetwork()
+  const createdAt = new Date()
+
+  const memoryNeuralNetwork = {
+    neuralnetworkId,
+    net,
+    createdAt
+  }
+
+  memoryNeuralNetworks.push(memoryNeuralNetwork)
+
+  return memoryNeuralNetwork
 }

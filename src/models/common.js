@@ -28,8 +28,9 @@ export const createVirtuals = (schema, commonName) => {
 
 export const createStatics = (schema, commonName) => {
   schema.statics.ensureEnabed = async function (options) {
-    const notValid = await this.where({ ...options, enabled: true }).countDocuments() === 0
-    if (notValid) throw new UserInputError(`${commonName} is not valid`)
+    // const worktowards = { ...options, enabled: true }
+    const notEnabled = await this.where(options).countDocuments() === 0
+    if (notEnabled) throw new UserInputError(`${commonName} is not enabled`)
   }
 
   schema.statics.returnCount = async function (options) {

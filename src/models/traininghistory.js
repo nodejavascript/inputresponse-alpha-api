@@ -39,6 +39,12 @@ export const trainingHistorySchema = new Schema(
     },
     samplesPerSecond: {
       type: Number
+    },
+    error: {
+      type: Number
+    },
+    iterations: {
+      type: Number
     }
   },
   {

@@ -13,6 +13,7 @@ export default gql`
     insertNeuralNetwork (insertNeuralNetworkInput: InsertNeuralNetworkInput!): NeuralNetwork @authenticated
     updateNeuralNetwork (updateNeuralNetworkInput: UpdateNeuralNetworkInput!): NeuralNetwork @authenticated
     requestNewApiKey (requestNewApiKeyInput: RequestNewApiKeyInput!): NeuralNetwork @authenticated
+    requestPrediction (requestNewApiKeyInput: RequestNewApiKeyInput!): NeuralNetwork @authenticated
   }
 
   type NetworkModel {
