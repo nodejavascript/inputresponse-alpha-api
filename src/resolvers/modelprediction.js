@@ -59,7 +59,7 @@ export default {
 
       const { neuralnetworkId } = await updateDocument(ModelPrediction, modelpredictionId, { input })
 
-      // left here for later. do not train if already trained?
+      // left here for later. do not train if already trained? this could be diff conditions than aboce (insert)
       const neuralnetwork = await trainMemoryNeuralNetwork(req, neuralnetworkId, info)
 
       return returnPredictionMemoryNeuralNetwork({ modelpredictionId, input, neuralnetwork })
