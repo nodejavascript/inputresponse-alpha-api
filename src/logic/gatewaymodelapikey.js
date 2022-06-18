@@ -5,11 +5,11 @@ import { returnTrustedUser, findDocument } from './'
 
 const { REDIS_CACHE_PREFIX_APIKEY, REDIS_CACHE_PREFIX_SAMPLING_CLIENT, REDIS_CACHE_EXPIRES_SECONDS_SAMPLING_CLIENT } = process.env
 
-export const returnNewModelSample = async (req, insertModelSampleInput) => {
-  const { apiKey, samplingclientId: suspectSamplingClientId } = insertModelSampleInput
+export const validateApiSubmission = async (req, input) => {
+  const { apiKey, samplingclientId: suspectSamplingClientId } = input
 
-  const modelSample = {
-    ...insertModelSampleInput
+  const newRecord = {
+    ...input
   }
 
   const [cacheUserNN, cacheSamplingClient] = await Promise.all([
@@ -18,35 +18,35 @@ export const returnNewModelSample = async (req, insertModelSampleInput) => {
   ])
 
   if (cacheSamplingClient) {
-    modelSample.userId = cacheSamplingClient.userId
-    modelSample.samplingclientId = cacheSamplingClient.samplingclientId
+    newRecord.userId = cacheSamplingClient.userId
+    newRecord.samplingclientId = cacheSamplingClient.samplingclientId
   }
 
   if (cacheUserNN) {
-    modelSample.userId = cacheUserNN.userId // takes precidence because api is slightly more trusted
-    modelSample.neuralnetworkId = cacheUserNN.neuralnetworkId
+    newRecord.userId = cacheUserNN.userId // takes precidence because api is slightly more trusted
+    newRecord.neuralnetworkId = cacheUserNN.neuralnetworkId
   }
 
-  const user = !modelSample.userId && await returnTrustedUser(req)
+  const user = !newRecord.userId && await returnTrustedUser(req)
 
   if (user) {
-    modelSample.userId = user.id
+    newRecord.userId = user.id
   }
 
   const [neuralnetworkId, samplingclientId] = await Promise.all([
-    !modelSample.neuralnetworkId && returnNeuralnetworkId(modelSample.userId, apiKey),
-    !modelSample.samplingclientId && returnSamplingClientId(modelSample.userId, suspectSamplingClientId)
+    !newRecord.neuralnetworkId && returnNeuralnetworkId(newRecord.userId, apiKey),
+    !newRecord.samplingclientId && returnSamplingClientId(newRecord.userId, suspectSamplingClientId)
   ])
 
   if (neuralnetworkId) {
-    modelSample.neuralnetworkId = neuralnetworkId
+    newRecord.neuralnetworkId = neuralnetworkId
   }
 
   if (samplingclientId) {
-    modelSample.samplingclientId = samplingclientId
+    newRecord.samplingclientId = samplingclientId
   }
 
-  return modelSample
+  return newRecord
 }
 
 const returnNeuralnetworkId = async (userId, apiKey) => {

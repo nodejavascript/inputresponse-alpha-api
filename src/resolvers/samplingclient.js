@@ -62,17 +62,17 @@ export default {
     }
   },
   SamplingClient: {
-    user: async (samplingClient, args, { req, res }, info) => {
-      const { userId: _id } = samplingClient
+    user: async (samplingclient, args, { req, res }, info) => {
+      const { userId: _id } = samplingclient
       return findDocument(User, { _id })
     },
-    neuralNetworks: async (samplingClient, args, { req, res }, info) => {
-      const { id: samplingclientId } = samplingClient
+    neuralNetworks: async (samplingclient, args, { req, res }, info) => {
+      const { id: samplingclientId } = samplingclient
       const modelSamples = await findDocuments(ModelSample, { samplingclientId })
       return findDocuments(NeuralNetwork, { _id: { $in: modelSamples.map(i => i.neuralnetworkId) } })
     },
-    modelSamples: async (samplingClient, args, { req, res }, info) => {
-      const { id: samplingclientId } = samplingClient
+    modelSamples: async (samplingclient, args, { req, res }, info) => {
+      const { id: samplingclientId } = samplingclient
       return findDocuments(ModelSample, { samplingclientId })
     }
   }

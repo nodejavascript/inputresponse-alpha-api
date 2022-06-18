@@ -1,6 +1,6 @@
 import { User, NeuralNetwork, SamplingClient, ModelSample } from '../models'
 import { validateInsertModelSampleInput, validateUpdateModelSampleInput, validateQueryModelSampleInput } from '../validation'
-import { returnNewModelSample, returnTrustedUser, findDocuments, createDocument, findDocument, updateDocument } from '../logic'
+import { validateApiSubmission, returnTrustedUser, findDocuments, createDocument, findDocument, updateDocument } from '../logic'
 import { returnEnabedUserNeuralNetwork } from './neuralnetwork'
 import { trainMemoryNeuralNetwork } from './memory'
 
@@ -39,10 +39,9 @@ export default {
 
       await validateInsertModelSampleInput.validateAsync(insertModelSampleInput, { abortEarly: false })
 
-      const modelSample = await returnNewModelSample(req, insertModelSampleInput)
+      const newRecord = await validateApiSubmission(req, insertModelSampleInput)
 
-      // !!NEXT - if same is enabled, re train model and provide AI `guess`, `run`, svg, etc...
-      const modelsample = await createDocument(ModelSample, modelSample)
+      const modelsample = await createDocument(ModelSample, newRecord)
 
       const { neuralnetworkId, enabled } = modelsample
       enabled && await trainMemoryNeuralNetwork(req, neuralnetworkId)
@@ -66,17 +65,17 @@ export default {
     }
   },
   ModelSample: {
-    user: async (modelSample, args, { req, res }, info) => {
-      const { neuralnetworkId } = modelSample
+    user: async (modelsample, args, { req, res }, info) => {
+      const { neuralnetworkId } = modelsample
       const { userId: _id } = await findDocument(NeuralNetwork, { _id: neuralnetworkId })
       return findDocument(User, { _id })
     },
-    neuralNetwork: async (modelSample, args, { req, res }, info) => {
-      const { neuralnetworkId: _id } = modelSample
+    neuralNetwork: async (modelsample, args, { req, res }, info) => {
+      const { neuralnetworkId: _id } = modelsample
       return findDocument(NeuralNetwork, { _id })
     },
-    samplingClient: async (modelSample, args, { req, res }, info) => {
-      const { samplingclientId: _id } = modelSample
+    samplingClient: async (modelsample, args, { req, res }, info) => {
+      const { samplingclientId: _id } = modelsample
       return findDocument(SamplingClient, { _id })
     }
   }

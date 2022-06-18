@@ -5,8 +5,8 @@ export default {
   Query: { },
   Mutation: { },
   TrainingHistory: {
-    neuralNetwork: async (trainingHistory, args, { req, res }, info) => {
-      const { neuralnetworkId: _id } = trainingHistory
+    neuralNetwork: async (traininghistory, args, { req, res }, info) => {
+      const { neuralnetworkId: _id } = traininghistory
       return findDocument(NeuralNetwork, { _id })
     }
   }

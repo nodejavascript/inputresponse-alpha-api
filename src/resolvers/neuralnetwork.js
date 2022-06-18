@@ -124,25 +124,25 @@ export default {
     }
   },
   NeuralNetwork: {
-    user: async (neuralNetwork, args, { req, res }, info) => {
-      const { userId: _id } = neuralNetwork
+    user: async (neuralnetwork, args, { req, res }, info) => {
+      const { userId: _id } = neuralnetwork
       return findDocument(User, { _id })
     },
-    samplingClients: async (neuralNetwork, args, { req, res }, info) => {
-      const { id: neuralnetworkId } = neuralNetwork
+    samplingClients: async (neuralnetwork, args, { req, res }, info) => {
+      const { id: neuralnetworkId } = neuralnetwork
       const modelSamples = await findDocuments(ModelSample, { neuralnetworkId })
       return findDocuments(SamplingClient, { _id: { $in: modelSamples.map(i => i.samplingclientId) } })
     },
-    modelSamples: async (neuralNetwork, args, { req, res }, info) => {
-      const { id: neuralnetworkId } = neuralNetwork
+    modelSamples: async (neuralnetwork, args, { req, res }, info) => {
+      const { id: neuralnetworkId } = neuralnetwork
       return findDocuments(ModelSample, { neuralnetworkId })
     },
-    memoryNeuralNetwork: (neuralNetwork, args, { req, res }, info) => {
-      const { id: neuralnetworkId } = neuralNetwork
+    memoryNeuralNetwork: (neuralnetwork, args, { req, res }, info) => {
+      const { id: neuralnetworkId } = neuralnetwork
       return returnMemoryNeuralNetwork(neuralnetworkId)
     },
-    trainingHistory: async (neuralNetwork, args, { req, res }, info) => {
-      const { id: neuralnetworkId } = neuralNetwork
+    trainingHistory: async (neuralnetwork, args, { req, res }, info) => {
+      const { id: neuralnetworkId } = neuralnetwork
       return findDocuments(TrainingHistory, { neuralnetworkId })
     }
   }

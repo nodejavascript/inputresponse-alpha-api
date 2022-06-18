@@ -1,6 +1,6 @@
 import { User, NeuralNetwork, SamplingClient, ModelPrediction } from '../models'
 import { validateInsertModelPredictionInput, validateUpdateModelPredictionInput, validateQueryModelPredictionInput } from '../validation'
-import { returnTrustedUser, findDocuments, findDocument, updateDocument } from '../logic'
+import { validateApiSubmission, returnTrustedUser, findDocuments, createDocument, findDocument, updateDocument } from '../logic'
 import { returnEnabedUserNeuralNetwork } from './neuralnetwork'
 import { trainMemoryNeuralNetwork } from './memory'
 
@@ -38,7 +38,12 @@ export default {
       const { insertModelPredictionInput } = args
 
       await validateInsertModelPredictionInput.validateAsync(insertModelPredictionInput, { abortEarly: false })
-      return true
+
+      const newRecord = await validateApiSubmission(req, insertModelPredictionInput)
+
+      const modelprediction = await createDocument(ModelPrediction, newRecord)
+
+      return modelprediction
     },
     updateModelPrediction: async (root, args, { req, res }, info) => {
       const { updateModelPredictionInput } = args
@@ -57,17 +62,17 @@ export default {
     }
   },
   ModelPrediction: {
-    user: async (modelPrediction, args, { req, res }, info) => {
-      const { neuralnetworkId } = modelPrediction
+    user: async (modelprediction, args, { req, res }, info) => {
+      const { neuralnetworkId } = modelprediction
       const { userId: _id } = await findDocument(NeuralNetwork, { _id: neuralnetworkId })
       return findDocument(User, { _id })
     },
-    neuralNetwork: async (modelPrediction, args, { req, res }, info) => {
-      const { neuralnetworkId: _id } = modelPrediction
+    neuralNetwork: async (modelprediction, args, { req, res }, info) => {
+      const { neuralnetworkId: _id } = modelprediction
       return findDocument(NeuralNetwork, { _id })
     },
-    samplingClient: async (modelPrediction, args, { req, res }, info) => {
-      const { samplingclientId: _id } = modelPrediction
+    samplingClient: async (modelprediction, args, { req, res }, info) => {
+      const { samplingclientId: _id } = modelprediction
       return findDocument(SamplingClient, { _id })
     }
   }
