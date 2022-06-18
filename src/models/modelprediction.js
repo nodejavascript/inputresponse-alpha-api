@@ -24,8 +24,13 @@ const modelPredictionSchema = new Schema(
       ref: 'SamplingClient',
       sparse: true
     },
-    input: {},
-    output: {}
+    diagram: {
+      type: String,
+      trim: true
+    },
+    likely: {},
+    guess: {},
+    toJSON: {}
   },
   {
     timestamps: true,

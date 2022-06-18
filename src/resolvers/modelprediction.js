@@ -2,7 +2,7 @@ import { User, NeuralNetwork, SamplingClient, ModelPrediction } from '../models'
 import { validateInsertModelPredictionInput, validateUpdateModelPredictionInput, validateQueryModelPredictionInput } from '../validation'
 import { validateApiSubmission, returnTrustedUser, findDocuments, createDocument, findDocument, updateDocument } from '../logic'
 import { returnEnabedUserNeuralNetwork } from './neuralnetwork'
-import { trainMemoryNeuralNetwork } from './memory'
+import { trainMemoryNeuralNetwork, returnPredictionMemoryNeuralNetwork } from './memory'
 
 const returnEnabledUserModelPrediction = async (req, _id) => {
   const query = { _id }
@@ -36,7 +36,7 @@ export default {
   Mutation: {
     insertModelPrediction: async (root, args, { req, res }, info) => {
       const { insertModelPredictionInput } = args
-      console.log('insertModelPredictionInput', insertModelPredictionInput)
+      // console.log('insertModelPredictionInput', insertModelPredictionInput)
       await validateInsertModelPredictionInput.validateAsync(insertModelPredictionInput, { abortEarly: false })
 
       const newRecord = await validateApiSubmission(req, insertModelPredictionInput)
@@ -47,16 +47,27 @@ export default {
     },
     updateModelPrediction: async (root, args, { req, res }, info) => {
       const { updateModelPredictionInput } = args
-      console.log('updateModelPredictionInput', updateModelPredictionInput)
+
       await validateUpdateModelPredictionInput.validateAsync(updateModelPredictionInput, { abortEarly: false })
+
       const { modelpredictionId } = updateModelPredictionInput
+
+      // solves bug in brainJS, because it can't parse [Object: null prototype] { r: 1, g: 200, b: 210 }
+      const input = JSON.parse(JSON.stringify(updateModelPredictionInput.input))
 
       await returnEnabledUserModelPrediction(req, modelpredictionId)
 
-      const modelprediction = await updateDocument(ModelPrediction, modelpredictionId, updateModelPredictionInput)
+      const modelpredictionPretrained = await updateDocument(ModelPrediction, modelpredictionId, { input })
 
-      const { neuralnetworkId, enabled } = modelprediction
-      enabled && await trainMemoryNeuralNetwork(req, neuralnetworkId)
+      const { neuralnetworkId, enabled } = modelpredictionPretrained
+
+      if (!enabled) return modelpredictionPretrained
+
+      await trainMemoryNeuralNetwork(req, neuralnetworkId)
+
+      const prediction = await returnPredictionMemoryNeuralNetwork({ neuralnetworkId, input })
+
+      const modelprediction = await updateDocument(ModelPrediction, modelpredictionId, prediction)
 
       return modelprediction
     }
