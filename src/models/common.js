@@ -62,10 +62,12 @@ export const commonToCoreSchemas = {
   },
   enabled: {
     type: Boolean,
-    default: true
+    default: true,
+    sparse: true
   },
   archived: {
     type: Boolean,
-    default: false
+    default: false,
+    sparse: true
   }
 }

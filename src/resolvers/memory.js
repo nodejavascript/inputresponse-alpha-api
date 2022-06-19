@@ -14,14 +14,18 @@ export const returnMemoryNeuralNetwork = neuralnetworkId => {
   return memoryNeuralNetworks.find(i => i.neuralnetworkId === neuralnetworkId.toString())
 }
 
-const updateMemoryNeuralNetwork = (neuralnetworkId, net) => {
+const updateMemoryNeuralNetwork = (neuralnetworkId, net, options = { }) => {
   const index = memoryNeuralNetworks.findIndex(i => i.neuralnetworkId === neuralnetworkId.toString())
 
   const existing = memoryNeuralNetworks[index]
 
+  const createdAt = new Date()
+
   memoryNeuralNetworks[index] = {
     ...existing,
-    ...net
+    ...options,
+    ...net,
+    createdAt
   }
 }
 
@@ -78,24 +82,25 @@ export const trainMemoryNeuralNetwork = async (req, neuralnetworkId, info = { })
   const trainingResponse = await memoryNeuralNetwork.net.trainAsync(model)
   const trainingMs = getTickCount() - start
 
-  const samplesPerSecond = modelSize / (trainingMs / 1000)
+  const samplesPerSecond = trainingMs ? modelSize / (trainingMs / 1000) : 0
 
   const { path: operation } = info
+
   const trainingHistory = {
     ...trainingResponse,
     neuralnetworkId,
     modelsampleIds,
     samplingclientIds,
-    modelSize,
     inputSize,
     inputRange,
     outputSize,
+    operation,
     trainingMs,
     samplesPerSecond,
-    operation
+    modelSize
   }
 
-  updateMemoryNeuralNetwork(neuralnetworkId, memoryNeuralNetwork.net)
+  updateMemoryNeuralNetwork(neuralnetworkId, memoryNeuralNetwork.net, trainingHistory)
 
   const { id: lastTraininghistoryId } = await createDocument(TrainingHistory, trainingHistory)
 

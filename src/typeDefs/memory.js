@@ -19,6 +19,7 @@ export default gql`
     neuralnetworkId: String
     modelSize: Int
     trainingMs: Int
+    iterations: Int
     samplesPerSecond: Float
     createdAt: String @date
   }
