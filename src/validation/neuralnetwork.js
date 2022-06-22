@@ -31,3 +31,7 @@ export const validateNeuralNetworkModelInput = Joi.object().keys({
 export const validateQueryNeuralNetworkInput = Joi.object().keys({
   neuralnetworkId
 })
+
+export const validateDisableModelSamplesInput = Joi.object().keys({
+  neuralnetworkId
+})

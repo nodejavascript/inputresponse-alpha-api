@@ -1,8 +1,15 @@
 import { User, NeuralNetwork, SamplingClient, ModelSample, TrainingHistory, ModelPrediction } from '../models'
-import { validateInsertNeuralNetworkInput, validateUpdateNeuralNetworkInput, validateRequestNewApiKeyInput, validateNeuralNetworkModelInput, validateQueryNeuralNetworkInput } from '../validation'
-import { returnTrustedUser, deleteCacheUserNN, findDocuments, createDocument, updateDocument, findDocument } from '../logic'
+import { returnTrustedUser, deleteCacheUserNN, findDocuments, createDocument, updateDocument, findDocument, updateDocuments } from '../logic'
 import { dayjsDefaultFormat, return4ByteKey, checkExpired } from '../lib'
 import { returnMemoryNeuralNetwork } from './memory'
+import {
+  validateInsertNeuralNetworkInput,
+  validateUpdateNeuralNetworkInput,
+  validateRequestNewApiKeyInput,
+  validateNeuralNetworkModelInput,
+  validateQueryNeuralNetworkInput,
+  validateDisableModelSamplesInput
+} from '../validation'
 
 export const returnApiKeyExpired = neuralnetwork => {
   const { apiKeyCreated, apiKeyExpires } = neuralnetwork
@@ -96,6 +103,19 @@ export default {
 
       return updateDocument(NeuralNetwork, neuralnetworkId, updateNeuralNetworkInput)
     },
+    disableModelSamples: async (root, args, { req, res }, info) => {
+      const { disableModelSamplesInput } = args
+
+      await validateDisableModelSamplesInput.validateAsync(disableModelSamplesInput, { abortEarly: false })
+
+      const { neuralnetworkId } = disableModelSamplesInput
+
+      const neuralnetwork = await returnEnabedUserNeuralNetwork(req, neuralnetworkId)
+
+      await updateDocuments(ModelSample, { neuralnetworkId, enabled: true }, { enabled: false })
+
+      return neuralnetwork
+    },
     requestNewApiKey: async (root, args, { req, res }, info) => {
       const { requestNewApiKeyInput } = args
 
@@ -128,12 +148,12 @@ export default {
     },
     samplingClients: async (neuralnetwork, args, { req, res }, info) => {
       const { id: neuralnetworkId } = neuralnetwork
-      const modelSamples = await findDocuments(ModelSample, { neuralnetworkId })
+      const modelSamples = await findDocuments(ModelSample, { neuralnetworkId, enabled: true })
       return findDocuments(SamplingClient, { _id: { $in: modelSamples.map(i => i.samplingclientId) } })
     },
     modelSamples: async (neuralnetwork, args, { req, res }, info) => {
       const { id: neuralnetworkId } = neuralnetwork
-      return findDocuments(ModelSample, { neuralnetworkId })
+      return findDocuments(ModelSample, { neuralnetworkId, enabled: true })
     },
     memoryNeuralNetwork: (neuralnetwork, args, { req, res }, info) => {
       const { id: neuralnetworkId } = neuralnetwork
@@ -149,7 +169,7 @@ export default {
     },
     modelPredictions: async (neuralnetwork, args, { req, res }, info) => {
       const { id: neuralnetworkId } = neuralnetwork
-      return findDocuments(ModelPrediction, { neuralnetworkId })
+      return findDocuments(ModelPrediction, { neuralnetworkId, enabled: true })
     }
   }
 }

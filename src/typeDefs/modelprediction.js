@@ -11,6 +11,7 @@ export default gql`
   extend type Mutation {
     insertModelPrediction (insertModelPredictionInput: InsertModelPredictionInput!): ModelPrediction
     updateModelPrediction (updateModelPredictionInput: UpdateModelPredictionInput!): ModelPrediction @authenticated
+    requestPrediction (requestNewApiKeyInput: RequestNewApiKeyInput!): NeuralNetwork @authenticated
   }
 
   type ModelPrediction {

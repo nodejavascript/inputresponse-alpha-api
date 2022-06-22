@@ -13,7 +13,7 @@ export default gql`
     insertNeuralNetwork (insertNeuralNetworkInput: InsertNeuralNetworkInput!): NeuralNetwork @authenticated
     updateNeuralNetwork (updateNeuralNetworkInput: UpdateNeuralNetworkInput!): NeuralNetwork @authenticated
     requestNewApiKey (requestNewApiKeyInput: RequestNewApiKeyInput!): NeuralNetwork @authenticated
-    requestPrediction (requestNewApiKeyInput: RequestNewApiKeyInput!): NeuralNetwork @authenticated
+    disableModelSamples (disableModelSamplesInput: DisableModelSamplesInput!): NeuralNetwork @authenticated
   }
 
   type NetworkModel {
@@ -72,6 +72,10 @@ export default gql`
   }
 
   input QueryNeuralNetworkInput {
+    neuralnetworkId: ID
+  }
+
+  input DisableModelSamplesInput {
     neuralnetworkId: ID
   }
 `
