@@ -14,6 +14,11 @@ export default gql`
     requestPrediction (requestNewApiKeyInput: RequestNewApiKeyInput!): NeuralNetwork @authenticated
   }
 
+  type Guess {
+    guess: String
+    confidence: String
+  }
+
   type ModelPrediction {
     ${commonToCoreQueries}
     userId: String
@@ -25,9 +30,11 @@ export default gql`
 
     diagram: String
     likely: Object
-    guess: Object
     toJSON: Object
     predictionMs: Int
+
+    guess: Object
+    guesses: [Guess]
 
     user: User
     neuralNetwork: NeuralNetwork

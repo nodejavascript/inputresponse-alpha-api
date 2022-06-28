@@ -29,13 +29,14 @@ const updateMemoryNeuralNetwork = (neuralnetworkId, net, options = { }) => {
   }
 }
 
-export const returnPredictionMemoryNeuralNetwork = async ({ modelpredictionId, input: inputWithBrainJSBug, neuralnetwork }) => {
-  const { id: neuralnetworkId, lastTraininghistoryId: traininghistoryId } = neuralnetwork
-
+export const returnPredictionMemoryNeuralNetwork = async (req, { modelpredictionId, input: inputWithBrainJSBug, neuralnetworkId }, info) => {
   // solves bug in brainJS, because it can't parse [Object: null prototype] { r: 1, g: 200, b: 210 }
   const input = JSON.parse(JSON.stringify(inputWithBrainJSBug))
 
   const { net } = createOrReturnMemoryNeuralNetwork(neuralnetworkId)
+
+  const isTrained = memoryNeuralNetworkIsTrained(net)
+  !isTrained && await trainMemoryNeuralNetwork(req, neuralnetworkId, info)
 
   const start = getTickCount()
   const [diagram, likely, guess, toJSON] = await Promise.all([
@@ -49,7 +50,7 @@ export const returnPredictionMemoryNeuralNetwork = async ({ modelpredictionId, i
   console.log('Neural Network predicted', predictionMs, 'ms')
 
   // record already updated with good input format
-  return updateDocument(ModelPrediction, modelpredictionId, { diagram, likely, guess, toJSON, traininghistoryId, predictionMs })
+  return updateDocument(ModelPrediction, modelpredictionId, { diagram, likely, guess, toJSON, predictionMs })
 }
 
 export const trainMemoryNeuralNetwork = async (req, neuralnetworkId, info = { }) => {
@@ -147,4 +148,13 @@ const createOrReturnMemoryNeuralNetwork = neuralnetworkId => {
   memoryNeuralNetworks.push(memoryNeuralNetwork)
 
   return memoryNeuralNetwork
+}
+
+export const memoryNeuralNetworkIsTrained = net => {
+  try {
+    net.toJSON()
+    return true
+  } catch (err) {
+    return false
+  }
 }

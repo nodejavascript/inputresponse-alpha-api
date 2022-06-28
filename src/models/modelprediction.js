@@ -58,6 +58,21 @@ modelPredictionSchema.virtual('outputDisplay').get(function () {
   return JSON.stringify(this.output)
 })
 
+modelPredictionSchema.virtual('guesses').get(function () {
+  const guess = this.guess
+
+  const guesses = []
+
+  Object.keys(guess).forEach(key => {
+    guesses.push({
+      guess: key,
+      confidence: guess[key]
+    })
+  })
+
+  return guesses
+})
+
 const ModelPrediction = connectDatabase().model(commonName, modelPredictionSchema, 'modelprediction')
 
 export default ModelPrediction

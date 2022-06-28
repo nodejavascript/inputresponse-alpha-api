@@ -43,10 +43,7 @@ export default {
 
       const { id: modelpredictionId, neuralnetworkId, input } = await createDocument(ModelPrediction, newRecord)
 
-      // left here for later. do not train if already trained?
-      const neuralnetwork = await trainMemoryNeuralNetwork(req, neuralnetworkId, info)
-
-      return returnPredictionMemoryNeuralNetwork({ modelpredictionId, input, neuralnetwork })
+      return returnPredictionMemoryNeuralNetwork(req, { modelpredictionId, input, neuralnetworkId }, info)
     },
     updateModelPrediction: async (root, args, { req, res }, info) => {
       const { updateModelPredictionInput } = args
