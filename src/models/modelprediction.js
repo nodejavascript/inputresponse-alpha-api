@@ -59,14 +59,14 @@ modelPredictionSchema.virtual('outputDisplay').get(function () {
 })
 
 modelPredictionSchema.virtual('guesses').get(function () {
-  const guess = this.guess
+  if (!this.guess) return []
 
   const guesses = []
 
-  Object.keys(guess).forEach(key => {
+  Object.keys(this.guess).forEach(key => {
     guesses.push({
       guess: key,
-      confidence: guess[key]
+      confidence: this.guess[key]
     })
   })
 
