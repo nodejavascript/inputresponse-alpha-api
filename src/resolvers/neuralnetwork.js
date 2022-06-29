@@ -42,6 +42,7 @@ export const returnUserNeuralNeworkModel = async neuralnetworkId => {
 
   const model = modelsamples.map(({ input, output }) => ({ input, output }))
   const meta = modelsamples.map(({ id, samplingclientId }) => ({ id, samplingclientId }))
+
   return { model, meta }
 }
 

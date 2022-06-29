@@ -44,7 +44,9 @@ export default {
       const modelsample = await createDocument(ModelSample, newRecord)
 
       const { neuralnetworkId, enabled } = modelsample
-      enabled && await trainMemoryNeuralNetwork(req, neuralnetworkId, info)
+      const { skipTraining } = insertModelSampleInput
+
+      !skipTraining && enabled && await trainMemoryNeuralNetwork(req, neuralnetworkId, info)
 
       return modelsample
     },

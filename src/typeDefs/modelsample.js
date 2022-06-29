@@ -40,6 +40,7 @@ export default gql`
     samplingclientId: ID
     input: Object
     output: [Object]
+    skipTraining: Boolean
   }
 
   input UpdateModelSampleInput {

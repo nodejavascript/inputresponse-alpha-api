@@ -54,11 +54,19 @@ export const returnPredictionMemoryNeuralNetwork = async (req, { modelprediction
 }
 
 export const trainMemoryNeuralNetwork = async (req, neuralnetworkId, info = { }) => {
+  console.time('returnEnabedUserNeuralNetwork')
   await returnEnabedUserNeuralNetwork(req, neuralnetworkId)
+  console.timeEnd('returnEnabedUserNeuralNetwork')
 
+  console.time('createOrReturnMemoryNeuralNetwork')
   const memoryNeuralNetwork = createOrReturnMemoryNeuralNetwork(neuralnetworkId)
+  console.timeEnd('createOrReturnMemoryNeuralNetwork')
 
+  console.time('returnUserNeuralNeworkModel')
   const { model, meta } = await returnUserNeuralNeworkModel(neuralnetworkId)
+  console.timeEnd('returnUserNeuralNeworkModel')
+
+  console.log('model', model)
 
   const modelsampleIds = uniqArray(meta.map(i => i.id))
   const samplingclientIds = uniqArray(meta.map(i => i.samplingclientId))
