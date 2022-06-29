@@ -25,7 +25,10 @@ const modelSampleSchema = new Schema(
       sparse: true
     },
     input: {},
-    output: {}
+    output: {},
+    skipTraining: {
+      type: Boolean
+    }
   },
   {
     timestamps: true,

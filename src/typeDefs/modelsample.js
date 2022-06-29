@@ -28,6 +28,7 @@ export default gql`
 
     inputDisplay: String
     outputDisplay: String
+    skipTraining: Boolean
 
     user: User
     neuralNetwork: NeuralNetwork

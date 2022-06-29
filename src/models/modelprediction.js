@@ -73,6 +73,15 @@ modelPredictionSchema.virtual('guesses').get(function () {
   return guesses
 })
 
+modelPredictionSchema.virtual('guessFloat').get(function () {
+  return this.guess['0'] >= 0 && this.guess['0']
+})
+
+modelPredictionSchema.virtual('guessRounded').get(function () {
+  const guessRounded = Math.round(this.guess['0'])
+  return guessRounded >= 0 && guessRounded
+})
+
 const ModelPrediction = connectDatabase().model(commonName, modelPredictionSchema, 'modelprediction')
 
 export default ModelPrediction

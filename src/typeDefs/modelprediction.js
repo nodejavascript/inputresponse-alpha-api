@@ -35,6 +35,8 @@ export default gql`
 
     guess: Object
     guesses: [Guess]
+    guessFloat: Float
+    guessRounded: Int
 
     user: User
     neuralNetwork: NeuralNetwork
