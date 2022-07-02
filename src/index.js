@@ -80,10 +80,19 @@ export const startGraphQLServer = async () => {
       playground,
       introspection,
       debug,
-      formatResponse: (response, { context }) => {
-        if (context && context.res && response.data) response.data.meta = context.res.meta
-        return response
-      },
+      // formatResponse: (response, { context }) => {
+      //   if (!response.data) return response
+      //
+      //   response.data.extensions = { duration: 20 }
+      //   if (!context.res) return response
+      //
+      //   // context: you can specify more objects to append to `response.data` example setting res.extensions2 = { duration: 40 } in resolvers
+      //
+      //   return {
+      //     ...context.res,
+      //     ...response.data
+      //   }
+      // },
       context: async ({ req, res }) => {
         await requestVetting(req, res)
         return { req, res }
