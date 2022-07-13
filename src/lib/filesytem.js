@@ -11,7 +11,7 @@ const rootPath = path.join(__dirname, '../../')
 
 const returnPath = rootDirectory => path.join(rootPath, rootDirectory)
 
-const returnFile = (rootDirectory, jsonFilename) => `${returnPath(rootDirectory)}/${jsonFilename}.json`
+const returnFile = (rootDirectory, filename, ext) => `${returnPath(rootDirectory)}/${filename}.${ext || 'json'}`
 
 export const asyncReadDir = async ({ filter }) => readdir(rootPath, { filter })
 
@@ -26,6 +26,10 @@ export const asyncWriteJSON = async ({ rootDirectory, jsonFilename, data }) => {
 export const asyncReadJSON = async ({ rootDirectory, jsonFilename, encoding = 'utf8' }) => {
   const stringified = await readFile(returnFile(rootDirectory, jsonFilename), { encoding })
   return JSON.parse(stringified)
+}
+
+export const asyncReadFile = async ({ rootDirectory, csvFilename, ext, encoding = 'utf8' }) => {
+  return readFile(returnFile(rootDirectory, csvFilename, ext), { encoding })
 }
 
 export const asyncDeleteJSON = async options => {

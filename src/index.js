@@ -14,6 +14,7 @@ import resolvers from './resolvers'
 import schemaDirectives from './directives'
 import { launchMongo, createDockerVolume, connectToRedis } from './lib'
 import { clearRedisKeys } from './logic'
+import { startStackImport } from './migrations'
 
 const { json } = express
 
@@ -35,6 +36,7 @@ export const startGraphQLServer = async () => {
     ])
 
     await clearRedisKeys()
+    isLocal && await startStackImport()
 
     const app = express()
 
