@@ -12,7 +12,7 @@ import routes from './routes'
 import typeDefs from './typeDefs'
 import resolvers from './resolvers'
 import schemaDirectives from './directives'
-import { launchMongo, createDockerVolume, connectToRedis } from './lib'
+import { launchMongo, createDockerVolume, connectToRedis, launchMqtt } from './lib'
 import { clearRedisKeys } from './logic'
 
 const { json } = express
@@ -107,7 +107,8 @@ export const startGraphQLServer = async () => {
 
     const [ip] = await Promise.all([
       internalIp.v4(),
-      httpServer.listen({ port: APP_PORT })
+      httpServer.listen({ port: APP_PORT }),
+      launchMqtt()
     ])
 
     console.log(`server: http://${ip}:${APP_PORT}/intelligence`)
