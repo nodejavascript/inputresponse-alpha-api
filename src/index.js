@@ -20,7 +20,6 @@ const { json } = express
 const { NODE_ENV, APP_PORT } = process.env
 
 const isLocal = NODE_ENV === 'local'
-console.log('isLocal',isLocal)
 
 const requestVetting = async (req, res) => {
   // these are incoming requests where you throw error before apollo query / mutation / subscription are executed
@@ -113,7 +112,8 @@ export const startGraphQLServer = async () => {
       launchMqtt()
     ])
 
-    console.log(`server: http://${ip}:${APP_PORT}/graphql`)
+    isLocal && console.log(`SERVER: http://${ip}:${APP_PORT}${server.graphqlPath}`)
+    isLocal && console.log(`SUBSCRIPTIONS: ws://${ip}:${APP_PORT}${server.subscriptionsPath}`)
 
     isLocal && beep(1)
   } catch (err) {

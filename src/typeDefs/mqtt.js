@@ -7,7 +7,11 @@ export default gql`
   }
 
   extend type Subscription {
-    sensorDataInserted (topic: String): Mqtt
+    sensorDataInserted : Mqtt
+  }
+
+  input SubscriptionSensorDataInserted {
+    topic: String!
   }
 
   type Mqtt {

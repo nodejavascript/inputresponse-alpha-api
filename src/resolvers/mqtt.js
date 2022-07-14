@@ -1,6 +1,20 @@
-import { withFilter } from 'apollo-server-express'
+import { PubSub, withFilter } from 'apollo-server-express'
 import { Mqtt } from '../models'
-import { pubsubMqtt, findDocuments } from '../logic'
+import { findDocuments, createDocument } from '../logic'
+
+const persistentTopics = ['tele/nodejavascriptSensorDemo/SENSOR']
+
+const pubsubMqtt = new PubSub()
+
+const pubsubName = 'MQTT_INSERTED'
+
+export const decideToSave = async data => {
+  const { topic } = data
+  if (!topic || !persistentTopics.includes(topic)) return
+
+  const mqtt = await createDocument(Mqtt, data)
+  pubsubMqtt.publish(pubsubName, { sensorDataInserted: mqtt })
+}
 
 export default {
   Query: {
@@ -10,12 +24,14 @@ export default {
   },
   Subscription: {
     sensorDataInserted: {
+      // subscribe: () => pubsubMqtt.asyncIterator([pubsubName])
       subscribe: withFilter(
         () => pubsubMqtt.asyncIterator(['MQTT_INSERTED']),
         (payload, variables) => {
           console.log('payload', payload)
           console.log('variables', variables)
-          return (payload.sensorDataInserted.topic === variables.topic)
+          return true
+          // return (payload.sensorDataInserted.topic === variables.subscriptionSensorDataInserted.topic)
         }
       )
     }
