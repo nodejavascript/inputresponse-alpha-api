@@ -1,7 +1,10 @@
+import { PubSub } from 'apollo-server-express'
 import { Mqtt } from '../models'
 import isJSON from 'is-json'
 
 import { createDocument } from './'
+
+export const pubsubMqtt = new PubSub()
 
 const persistentTopics = ['tele/nodejavascriptSensorDemo/SENSOR']
 
@@ -11,8 +14,10 @@ export const onMessage = (topic, message) => {
   decideToSave({ topic, payload })
 }
 
-const decideToSave = async mqtt => {
-  const { topic } = mqtt
+const decideToSave = async data => {
+  const { topic } = data
   if (!topic || !persistentTopics.includes(topic)) return
-  return createDocument(Mqtt, mqtt)
+
+  const mqtt = await createDocument(Mqtt, data)
+  pubsubMqtt.publish('MQTT_INSERTED', { sensorDataInserted: mqtt })
 }

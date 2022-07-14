@@ -6,10 +6,13 @@ export default gql`
     mqtts: [Mqtt] @authenticated
   }
 
+  extend type Subscription {
+    sensorDataInserted (topic: String): Mqtt
+  }
+
   type Mqtt {
     ${commonToCoreQueries}
     topic: String
     payload: Object
   }
-
 `

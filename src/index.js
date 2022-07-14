@@ -20,6 +20,7 @@ const { json } = express
 const { NODE_ENV, APP_PORT } = process.env
 
 const isLocal = NODE_ENV === 'local'
+console.log('isLocal',isLocal)
 
 const requestVetting = async (req, res) => {
   // these are incoming requests where you throw error before apollo query / mutation / subscription are executed
@@ -63,7 +64,7 @@ export const startGraphQLServer = async () => {
 
     app.use(json({ limit: '5mb' }))
 
-    app.get('*', async (req, res, next) => {
+    !isLocal && app.get('*', async (req, res, next) => {
       const err = new Error('404')
       err.status = 404
       res.sendStatus(404)
@@ -105,13 +106,14 @@ export const startGraphQLServer = async () => {
     server.installSubscriptionHandlers(httpServer)
     // server.graphqlPath, server.subscriptionsPath
 
+    console.log('server.graphqlPath', server.graphqlPath)
     const [ip] = await Promise.all([
       internalIp.v4(),
       httpServer.listen({ port: APP_PORT }),
       launchMqtt()
     ])
 
-    console.log(`server: http://${ip}:${APP_PORT}/intelligence`)
+    console.log(`server: http://${ip}:${APP_PORT}/graphql`)
 
     isLocal && beep(1)
   } catch (err) {

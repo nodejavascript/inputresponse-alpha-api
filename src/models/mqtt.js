@@ -30,6 +30,6 @@ mqttSchema.virtual('outputDisplay').get(function () {
   return JSON.stringify(this.output)
 })
 
-const Mqtt = connectDatabase().model(commonName, mqttSchema, 'Mqtt')
+const Mqtt = connectDatabase().model(commonName, mqttSchema, 'mqtt')
 
 export default Mqtt
