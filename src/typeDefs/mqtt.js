@@ -7,7 +7,7 @@ export default gql`
   }
 
   extend type Subscription {
-    sensorDataInserted : Mqtt
+    sensorDataInserted (subscriptionSensorDataInserted: SubscriptionSensorDataInserted!): Mqtt
   }
 
   input SubscriptionSensorDataInserted {
