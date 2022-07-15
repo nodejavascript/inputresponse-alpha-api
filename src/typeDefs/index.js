@@ -8,6 +8,7 @@ import samplingclient from './samplingclient'
 import memory from './memory'
 import traininghistory from './traininghistory'
 import modelprediction from './modelprediction'
+import mqtt from './mqtt'
 
 export default [
   root,
@@ -19,5 +20,6 @@ export default [
   samplingclient,
   memory,
   traininghistory,
-  modelprediction
+  modelprediction,
+  mqtt
 ]

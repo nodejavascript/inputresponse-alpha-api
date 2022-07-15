@@ -12,7 +12,7 @@ import routes from './routes'
 import typeDefs from './typeDefs'
 import resolvers from './resolvers'
 import schemaDirectives from './directives'
-import { launchMongo, createDockerVolume, connectToRedis } from './lib'
+import { launchMongo, createDockerVolume, connectToRedis, launchMqtt } from './lib'
 import { clearRedisKeys } from './logic'
 import { startStackImport } from './migrations'
 
@@ -65,7 +65,7 @@ export const startGraphQLServer = async () => {
 
     app.use(json({ limit: '5mb' }))
 
-    app.get('*', async (req, res, next) => {
+    !isLocal && app.get('*', async (req, res, next) => {
       const err = new Error('404')
       err.status = 404
       res.sendStatus(404)
@@ -107,12 +107,15 @@ export const startGraphQLServer = async () => {
     server.installSubscriptionHandlers(httpServer)
     // server.graphqlPath, server.subscriptionsPath
 
+    console.log('server.graphqlPath', server.graphqlPath)
     const [ip] = await Promise.all([
       internalIp.v4(),
-      httpServer.listen({ port: APP_PORT })
+      httpServer.listen({ port: APP_PORT }),
+      launchMqtt()
     ])
 
-    console.log(`server: http://${ip}:${APP_PORT}/intelligence`)
+    isLocal && console.log(`SERVER: http://${ip}:${APP_PORT}${server.graphqlPath}`)
+    isLocal && console.log(`SUBSCRIPTIONS: ws://${ip}:${APP_PORT}${server.subscriptionsPath}`)
 
     isLocal && beep(1)
   } catch (err) {
