@@ -4,6 +4,7 @@ export const objectId = Joi.string().pattern(/^[a-f\d]{24}$/i).messages({
   'string.pattern.base': 'Invalid id pattern'
 })
 export const id = objectId.required().messages()
+export const optionalId = objectId.allow(null).messages()
 
 const order = Joi.number().allow('').allow(null).label('order').messages()
 const name = Joi.string().allow('').allow(null).label('name').messages()

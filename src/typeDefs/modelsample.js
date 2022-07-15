@@ -42,6 +42,7 @@ export default gql`
     input: Object
     output: [Object]
     skipTraining: Boolean
+    modelpredictionId: ID
   }
 
   input UpdateModelSampleInput {

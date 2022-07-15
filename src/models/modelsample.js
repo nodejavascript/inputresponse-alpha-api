@@ -28,6 +28,11 @@ const modelSampleSchema = new Schema(
     output: {},
     skipTraining: {
       type: Boolean
+    },
+    modelpredictionId: {
+      type: ObjectId,
+      ref: 'ModelPrediction',
+      sparse: true
     }
   },
   {
