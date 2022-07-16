@@ -1,8 +1,6 @@
 import { User, NeuralNetwork, SamplingClient, ModelSample } from '../models'
+import { validateApiSubmission, returnTrustedUser, findDocuments, createDocument, findDocument, updateDocument, returnEnabedUserNeuralNetwork, trainMemoryNeuralNetwork } from '../logic'
 import { validateInsertModelSampleInput, validateUpdateModelSampleInput, validateQueryModelSampleInput } from '../validation'
-import { validateApiSubmission, returnTrustedUser, findDocuments, createDocument, findDocument, updateDocument } from '../logic'
-import { returnEnabedUserNeuralNetwork } from './neuralnetwork'
-import { trainMemoryNeuralNetwork } from './memory'
 
 const returnEnabledUserModelSample = async (req, _id) => {
   const query = { _id }

@@ -1,8 +1,17 @@
 import { User, NeuralNetwork, SamplingClient, ModelPrediction, TrainingHistory } from '../models'
+import {
+  validateApiSubmission,
+  returnTrustedUser,
+  findDocuments,
+  createDocument,
+  findDocument,
+  updateDocument,
+  returnEnabedUserNeuralNetwork,
+  trainMemoryNeuralNetwork,
+  returnPredictionMemoryNeuralNetwork
+} from '../logic'
+
 import { validateInsertModelPredictionInput, validateUpdateModelPredictionInput, validateQueryModelPredictionInput } from '../validation'
-import { validateApiSubmission, returnTrustedUser, findDocuments, createDocument, findDocument, updateDocument } from '../logic'
-import { returnEnabedUserNeuralNetwork } from './neuralnetwork'
-import { trainMemoryNeuralNetwork, returnPredictionMemoryNeuralNetwork } from './memory'
 
 const returnEnabledUserModelPrediction = async (req, _id) => {
   const query = { _id }
@@ -34,7 +43,9 @@ export default {
     }
   },
   Mutation: {
+    // need mqtt version
     insertModelPrediction: async (root, args, { req, res }, info) => {
+      console.log('need mqtt version of insertModelPrediction')
       const { insertModelPredictionInput } = args
 
       await validateInsertModelPredictionInput.validateAsync(insertModelPredictionInput, { abortEarly: false })

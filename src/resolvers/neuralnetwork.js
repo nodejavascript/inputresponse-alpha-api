@@ -1,7 +1,19 @@
 import { User, NeuralNetwork, SamplingClient, ModelSample, TrainingHistory, ModelPrediction } from '../models'
-import { returnTrustedUser, deleteCacheUserNN, findDocuments, createDocument, updateDocument, findDocument, updateDocuments } from '../logic'
+import {
+  returnTrustedUser,
+  deleteCacheUserNN,
+  findDocuments,
+  createDocument,
+  updateDocument,
+  findDocument,
+  updateDocuments,
+  returnEnabedUserNeuralNetwork,
+  returnUserNeuralNeworks,
+  returnMemoryNeuralNetwork,
+  returnUserNeuralNeworkModel
+} from '../logic'
+
 import { dayjsDefaultFormat, return4ByteKey, checkExpired } from '../lib'
-import { returnMemoryNeuralNetwork } from './memory'
 import {
   validateInsertNeuralNetworkInput,
   validateUpdateNeuralNetworkInput,
@@ -18,33 +30,7 @@ export const returnApiKeyExpired = neuralnetwork => {
   return checkExpired(apiKeyExpires)
 }
 
-export const returnEnabedUserNeuralNetwork = async (req, _id) => {
-  const { id: userId } = await returnTrustedUser(req)
-  const query = { _id, userId }
-
-  const [neuralnetwork] = await Promise.all([
-    findDocument(NeuralNetwork, query),
-    NeuralNetwork.ensureEnabed(query)
-  ])
-
-  return neuralnetwork
-}
-
 const returnNewApiKey = apiKeyExpires => return4ByteKey()
-
-export const returnUserNeuralNeworks = async req => {
-  const { id: userId } = await returnTrustedUser(req)
-  return findDocuments(NeuralNetwork, { userId })
-}
-
-export const returnUserNeuralNeworkModel = async neuralnetworkId => {
-  const modelsamples = await findDocuments(ModelSample, { neuralnetworkId, enabled: true })
-
-  const model = modelsamples.map(({ input, output }) => ({ input, output }))
-  const meta = modelsamples.map(({ id, samplingclientId }) => ({ id, samplingclientId }))
-
-  return { model, meta }
-}
 
 export default {
   Query: {

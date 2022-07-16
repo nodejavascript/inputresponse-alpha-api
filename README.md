@@ -117,8 +117,26 @@ This project is under `active development`.
 
 More about my insights will follow [my article](https://nodejavascript.com/a-neural-network-engine?ref=githubAbout).
 
+### Updates
+
+###### 2022-07-16
+Objective: Support real-time prediction requests
+
+
+
+### Wishlist
+
+###### 2022-07-16
+- MQTT: create MQTT API using `topic` as endpoints, also using apiKey to determine the neural network.
+  `apiKey` avilable Endpoints:
+  - trainNeuralNetwork
+  - insertModelPrediction
+
+- neuralnetworkstore - require memory management service, possibly metrics, reduce garbage collection
+
 ### Built With
 
+* [brain.js](https://npmjs.com/package/brain.js)
 * [express](https://www.npmjs.com/package/express)
 * [mongoose](https://npmjs.com/package/mongoose)
 * [redis](https://npmjs.com/package/redis)
@@ -126,7 +144,6 @@ More about my insights will follow [my article](https://nodejavascript.com/a-neu
 * [apollo-server-express](https://npmjs.com/package/apollo-server-express)
 * [graphql](https://npmjs.com/package/graphql)
 * [joi](https://npmjs.com/package/joi)
-* [brain.js](https://npmjs.com/package/brain.js)
 * [esm](https://npmjs.com/package/esm)
 * [cors](https://npmjs.com/package/cors)
 * [dayjs](https://npmjs.com/package/dayjs)

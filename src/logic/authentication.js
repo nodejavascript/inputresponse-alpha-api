@@ -10,9 +10,8 @@ const { NODE_ENV, ADMIN_GOOGLEID, REDIS_CACHE_PREFIX_GOOGLE_USER, REDIS_CACHE_EX
 
 const returnName = idToken => redisKey(idToken, REDIS_CACHE_PREFIX_GOOGLE_USER)
 
+// ZERO-TRUST! ZERO-TRUST! ZERO-TRUST!
 export const returnTrustedUser = async req => {
-  // this is built to favour zero-trust
-
   const [idToken, admin] = await Promise.all([
     returnAuthTokenFromHeader(req),
     (ADMIN_GOOGLEID && NODE_ENV === 'local') && await returnUser({
