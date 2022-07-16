@@ -61,8 +61,6 @@ export const startGraphQLServer = async () => {
     app.get('/favicon.ico', (req, res) => res.sendStatus(204))
     app.use('/ping', routes.ping)
 
-    app.use('/intelligence', routes.intelligence)
-
     app.use(json({ limit: '5mb' }))
 
     !isLocal && app.get('*', async (req, res, next) => {

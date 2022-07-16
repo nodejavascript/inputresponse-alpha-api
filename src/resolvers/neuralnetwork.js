@@ -2,11 +2,13 @@ import { User, NeuralNetwork, SamplingClient, ModelSample, TrainingHistory, Mode
 import {
   returnTrustedUser,
   deleteCacheUserNN,
+
   findDocuments,
   createDocument,
   updateDocument,
   findDocument,
   updateDocuments,
+
   returnEnabedUserNeuralNetwork,
   returnUserNeuralNeworks,
   returnMemoryNeuralNetwork,

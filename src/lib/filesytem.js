@@ -5,13 +5,23 @@ import readFile from 'fs-readfile-promise'
 import writeFile from 'fs-writefile-promise'
 import del from 'del'
 
-const { NODE_ENV: env } = process.env
+const { NODE_ENV: env, DOCKER_VOLUME } = process.env
 
 const rootPath = path.join(__dirname, '../../')
 
 const returnPath = rootDirectory => path.join(rootPath, rootDirectory)
 
 const returnFile = (rootDirectory, filename, ext) => `${returnPath(rootDirectory)}/${filename}.${ext || 'json'}`
+
+export const createDockerVolume = async () => {
+  const root = await asyncReadDir({ filter: DOCKER_VOLUME })
+  if (root.length === 0) {
+    console.log('Filesystem was setup in the root', 'DOCKER_VOLUME:', DOCKER_VOLUME)
+    await asyncWriteDir({
+      directory: DOCKER_VOLUME
+    })
+  }
+}
 
 export const asyncReadDir = async ({ filter }) => readdir(rootPath, { filter })
 
