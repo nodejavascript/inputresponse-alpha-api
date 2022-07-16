@@ -32,7 +32,7 @@ export const newMemoryNeuralNetwork = memoryNeuralNetwork => {
   return returnMemoryNeuralNetwork(neuralnetworkId)
 }
 
-export const updateMemoryNeuralNetwork = (neuralnetworkId, net, options = { }) => {
+export const updateAndReturnMemoryNeuralNetwork = (neuralnetworkId, update = { }) => {
   const index = memoryNeuralNetworks.findIndex(i => i.neuralnetworkId === neuralnetworkId.toString())
 
   const existing = memoryNeuralNetworks[index]
@@ -41,8 +41,9 @@ export const updateMemoryNeuralNetwork = (neuralnetworkId, net, options = { }) =
 
   memoryNeuralNetworks[index] = {
     ...existing,
-    ...options,
-    ...net,
+    ...update,
     createdAt
   }
+
+  return memoryNeuralNetworks[index]
 }

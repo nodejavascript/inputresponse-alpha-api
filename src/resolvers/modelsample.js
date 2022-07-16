@@ -1,5 +1,5 @@
 import { User, NeuralNetwork, SamplingClient, ModelSample } from '../models'
-import { validateApiSubmission, returnTrustedUser, findDocuments, createDocument, findDocument, updateDocument, returnEnabedUserNeuralNetwork, trainMemoryNeuralNetwork } from '../logic'
+import { validateApiSubmission, returnTrustedUser, findDocuments, createDocument, findDocument, updateDocument, returnUserNeuralNetwork, trainMemoryNeuralNetwork } from '../logic'
 import { validateInsertModelSampleInput, validateUpdateModelSampleInput, validateQueryModelSampleInput } from '../validation'
 
 const returnEnabledUserModelSample = async (req, _id) => {
@@ -10,7 +10,7 @@ const returnEnabledUserModelSample = async (req, _id) => {
   ])
 
   const { neuralnetworkId } = modelsample
-  await returnEnabedUserNeuralNetwork(req, neuralnetworkId)
+  await returnUserNeuralNetwork(req, neuralnetworkId)
 
   return modelsample
 }

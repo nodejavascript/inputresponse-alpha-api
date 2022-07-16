@@ -6,7 +6,6 @@ export default gql`
   extend type Query {
     neuralNetworks: [NeuralNetwork] @authenticated
     neuralNetwork (queryNeuralNetworkInput: QueryNeuralNetworkInput!): NeuralNetwork @authenticated
-    neuralNetworkModel (neuralNetworkModelInput: NeuralNetworkModelInput!): NetworkModel @authenticated
   }
 
   extend type Mutation {
@@ -14,12 +13,11 @@ export default gql`
     updateNeuralNetwork (updateNeuralNetworkInput: UpdateNeuralNetworkInput!): NeuralNetwork @authenticated
     requestNewApiKey (requestNewApiKeyInput: RequestNewApiKeyInput!): NeuralNetwork @authenticated
     disableModelSamples (disableModelSamplesInput: DisableModelSamplesInput!): NeuralNetwork @authenticated
+    trainNeuralNetwork (trainNeuralNetworkInput: TrainNeuralNetworkInput!): NeuralNetwork @authenticated
   }
 
-  type NetworkModel {
-    userId: ID
+  input TrainNeuralNetworkInput {
     neuralnetworkId: ID
-    model: [ModelSampleIO]
   }
 
   type NeuralNetwork {

@@ -7,14 +7,6 @@ export default gql`
     memoryNeuralNetworks: [MemoryNeuralNetwork] @authenticated
   }
 
-  extend type Mutation {
-    trainNeuralNetwork (trainNeuralNetworkInput: TrainNeuralNetworkInput!):  NeuralNetwork @authenticated
-  }
-
-  input TrainNeuralNetworkInput {
-    neuralnetworkId: ID
-  }
-
   type MemoryNeuralNetwork {
     neuralnetworkId: String
     modelSize: Int

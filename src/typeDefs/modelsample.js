@@ -13,11 +13,6 @@ export default gql`
     updateModelSample (updateModelSampleInput: UpdateModelSampleInput!): ModelSample @authenticated
   }
 
-  type ModelSampleIO {
-    input: Object
-    output: [Object]
-  }
-
   type ModelSample {
     ${commonToCoreQueries}
     userId: String

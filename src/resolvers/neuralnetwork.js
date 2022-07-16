@@ -9,10 +9,10 @@ import {
   findDocument,
   updateDocuments,
 
-  returnEnabedUserNeuralNetwork,
+  returnUserNeuralNetwork,
   returnUserNeuralNeworks,
   returnMemoryNeuralNetwork,
-  returnUserNeuralNeworkModel
+  trainMemoryNeuralNetwork
 } from '../logic'
 
 import { dayjsDefaultFormat, return4ByteKey, checkExpired } from '../lib'
@@ -20,9 +20,9 @@ import {
   validateInsertNeuralNetworkInput,
   validateUpdateNeuralNetworkInput,
   validateRequestNewApiKeyInput,
-  validateNeuralNetworkModelInput,
   validateQueryNeuralNetworkInput,
-  validateDisableModelSamplesInput
+  validateDisableModelSamplesInput,
+  validateTrainNeuralNetworkInput
 } from '../validation'
 
 export const returnApiKeyExpired = neuralnetwork => {
@@ -46,21 +46,7 @@ export default {
 
       const { neuralnetworkId } = queryNeuralNetworkInput
 
-      return returnEnabedUserNeuralNetwork(req, neuralnetworkId)
-    },
-    neuralNetworkModel: async (root, args, { req, res }, info) => {
-      const { neuralNetworkModelInput } = args
-
-      await validateNeuralNetworkModelInput.validateAsync(neuralNetworkModelInput, { abortEarly: false })
-
-      const { neuralnetworkId } = neuralNetworkModelInput
-
-      const [{ userId }, { model }] = await Promise.all([
-        returnEnabedUserNeuralNetwork(req, neuralnetworkId),
-        returnUserNeuralNeworkModel(neuralnetworkId)
-      ])
-
-      return { neuralnetworkId, userId, model }
+      return returnUserNeuralNetwork(req, neuralnetworkId)
     }
   },
   Mutation: {
@@ -88,7 +74,7 @@ export default {
 
       const { neuralnetworkId } = updateNeuralNetworkInput
 
-      await returnEnabedUserNeuralNetwork(req, neuralnetworkId)
+      await returnUserNeuralNetwork(req, neuralnetworkId)
 
       return updateDocument(NeuralNetwork, neuralnetworkId, updateNeuralNetworkInput)
     },
@@ -99,7 +85,7 @@ export default {
 
       const { neuralnetworkId } = disableModelSamplesInput
 
-      const neuralnetwork = await returnEnabedUserNeuralNetwork(req, neuralnetworkId)
+      const neuralnetwork = await returnUserNeuralNetwork(req, neuralnetworkId)
 
       await updateDocuments(ModelSample, { neuralnetworkId, enabled: true }, { enabled: false })
 
@@ -112,7 +98,7 @@ export default {
 
       const { neuralnetworkId, resetApiKey, deleteExpiry } = requestNewApiKeyInput
 
-      const neuralnetwork = await returnEnabedUserNeuralNetwork(req, neuralnetworkId)
+      const neuralnetwork = await returnUserNeuralNetwork(req, neuralnetworkId)
 
       const { apiKey } = neuralnetwork
 
@@ -128,6 +114,15 @@ export default {
       }
 
       return updateDocument(NeuralNetwork, neuralnetworkId, update)
+    },
+    trainNeuralNetwork: async (root, args, { req, res }, info) => {
+      const { trainNeuralNetworkInput } = args
+
+      await validateTrainNeuralNetworkInput.validateAsync(trainNeuralNetworkInput, { abortEarly: false })
+
+      const { neuralnetworkId } = trainNeuralNetworkInput
+
+      return trainMemoryNeuralNetwork(req, neuralnetworkId, info)
     }
   },
   NeuralNetwork: {

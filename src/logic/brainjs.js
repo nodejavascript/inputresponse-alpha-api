@@ -6,10 +6,9 @@ import * as brain from 'brain.js'
 import { NeuralNetwork, TrainingHistory, ModelSample, ModelPrediction } from '../models'
 
 import {
-  returnEnabedUserNeuralNetwork,
   returnMemoryNeuralNetwork,
   newMemoryNeuralNetwork,
-  updateMemoryNeuralNetwork,
+  updateAndReturnMemoryNeuralNetwork,
   createDocument,
   updateDocument,
   findDocuments
@@ -63,6 +62,7 @@ export const createOrReturnMemoryNeuralNetwork = neuralnetworkId => {
 
   const memoryNeuralNetwork = {
     neuralnetworkId: neuralnetworkId.toString(),
+    isTrained: false,
     net,
     createdAt
   }
@@ -70,54 +70,59 @@ export const createOrReturnMemoryNeuralNetwork = neuralnetworkId => {
   return newMemoryNeuralNetwork(memoryNeuralNetwork)
 }
 
-export const returnUserNeuralNeworkModel = async neuralnetworkId => {
-  const modelsamples = await findDocuments(ModelSample, { neuralnetworkId, enabled: true })
-
-  const model = modelsamples.map(({ input, output }) => ({ input, output }))
-  const meta = modelsamples.map(({ id, samplingclientId }) => ({ id, samplingclientId }))
-
-  return { model, meta }
-}
-
 // need mqtt version
 export const trainMemoryNeuralNetwork = async (req, neuralnetworkId, info = { }) => {
   console.log('need mqtt version of trainMemoryNeuralNetwork')
-  await returnEnabedUserNeuralNetwork(req, neuralnetworkId)
 
   const memoryNeuralNetwork = createOrReturnMemoryNeuralNetwork(neuralnetworkId)
 
-  const { model, meta } = await returnUserNeuralNeworkModel(neuralnetworkId)
+  const modelsamples = await findDocuments(ModelSample, { neuralnetworkId, enabled: true })
 
-  console.log('model', model)
-  const modelsampleIds = uniqArray(meta.map(i => i.id))
-  const samplingclientIds = uniqArray(meta.map(i => i.samplingclientId))
+  const modelSize = modelsamples.length
+  if (modelSize === 0) throw new UserInputError('Model can not be trained without a sample.')
 
-  const modelSize = model.length
-  if (model.length === 0) throw new UserInputError('Model can not be trained without a sample.')
+  const inputSize = modelsamples.reduce((total, currentValue) => {
+    const { input } = currentValue
+    const keyLength = Object.keys(input).length
+    return keyLength > total ? keyLength : total
+  }, 0)
 
-  const firstSample = model[0]
-  if (!firstSample.input || !firstSample.output) throw new UserInputError(`First sample missing params:${JSON.stringify(firstSample)}`)
+  const outputSize = modelsamples.reduce((total, currentValue) => {
+    const { output } = currentValue
+    const keyLength = Object.keys(output).length
+    return keyLength > total ? keyLength : total
+  }, 0)
 
-  const inputSize = Object.keys(firstSample.input).length
-  const inputRange = Object.keys(firstSample.input).length
-  const outputSize = firstSample.output.length
+  const inputRange = inputSize
 
-  console.log('inputSize', inputSize)
-
-  memoryNeuralNetwork.options = { inputSize, inputRange, outputSize }
+  memoryNeuralNetwork.net.options = { inputSize, outputSize, inputRange }
 
   // hiddenLayers: [4, 6, 5],
   // activation: 'sigmoid', // activation function
 
   const start = getTickCount()
 
+  const model = modelsamples.map(({ input, output }) => ({ input, output }))
   const trainingResponse = await memoryNeuralNetwork.net.trainAsync(model, { iterations: parseInt(INTERATIONS) })
+
+  const threshold = 0.001
+  if (trainingResponse.error < threshold) throw new UserInputError(`Training error (${trainingResponse.error}) has gone below the threshold (${threshold}).`)
 
   const trainingMs = getTickCount() - start
 
-  // console.log('net.toJSON()', memoryNeuralNetwork.net.toJSON())
-
   const samplesPerSecond = trainingMs ? modelSize / (trainingMs / 1000) : 0
+
+  const update = {
+    ...trainingResponse,
+    net: memoryNeuralNetwork.net,
+    samplesPerSecond,
+    isTrained: true
+  }
+
+  updateAndReturnMemoryNeuralNetwork(neuralnetworkId, update)
+
+  const modelsampleIds = uniqArray(modelsamples.map(i => i.id))
+  const samplingclientIds = uniqArray(modelsamples.map(i => i.samplingclientId))
 
   const { path: operation } = info
 
@@ -126,16 +131,14 @@ export const trainMemoryNeuralNetwork = async (req, neuralnetworkId, info = { })
     neuralnetworkId,
     modelsampleIds,
     samplingclientIds,
+    modelSize,
     inputSize,
     inputRange,
     outputSize,
     operation,
     trainingMs,
-    samplesPerSecond,
-    modelSize
+    samplesPerSecond
   }
-
-  updateMemoryNeuralNetwork(neuralnetworkId, memoryNeuralNetwork.net, trainingHistory)
 
   const { id: lastTraininghistoryId } = await createDocument(TrainingHistory, trainingHistory)
 

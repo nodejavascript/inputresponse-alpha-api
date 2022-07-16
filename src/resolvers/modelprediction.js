@@ -6,25 +6,11 @@ import {
   createDocument,
   findDocument,
   updateDocument,
-  returnEnabedUserNeuralNetwork,
   trainMemoryNeuralNetwork,
   returnPredictionMemoryNeuralNetwork
 } from '../logic'
 
 import { validateInsertModelPredictionInput, validateUpdateModelPredictionInput, validateQueryModelPredictionInput } from '../validation'
-
-const returnEnabledUserModelPrediction = async (req, _id) => {
-  const query = { _id }
-  const [modelprediction] = await Promise.all([
-    findDocument(ModelPrediction, query),
-    ModelPrediction.ensureEnabed(query)
-  ])
-
-  const { neuralnetworkId } = modelprediction
-  await returnEnabedUserNeuralNetwork(req, neuralnetworkId)
-
-  return modelprediction
-}
 
 export default {
   Query: {
@@ -39,7 +25,8 @@ export default {
 
       const { modelpredictionId } = queryModelPredictionInput
 
-      return returnEnabledUserModelPrediction(req, modelpredictionId)
+      // need wonership validation
+      return findDocument(ModelPrediction, { _id: modelpredictionId })
     }
   },
   Mutation: {
@@ -63,8 +50,7 @@ export default {
 
       const { modelpredictionId, input } = updateModelPredictionInput
 
-      await returnEnabledUserModelPrediction(req, modelpredictionId)
-
+      // TODO need to verify ownership
       const { neuralnetworkId } = await updateDocument(ModelPrediction, modelpredictionId, { input })
 
       // left here for later. do not train if already trained? this could be diff conditions than aboce (insert). tthis is why its updated before and after training (if necessary)
