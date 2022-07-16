@@ -55,6 +55,7 @@ export const returnPredictionMemoryNeuralNetwork = async (req, { modelprediction
 
 export const createOrReturnMemoryNeuralNetwork = neuralnetworkId => {
   const existing = returnMemoryNeuralNetwork(neuralnetworkId)
+
   if (existing) return existing
 
   const net = new brain.NeuralNetwork()
@@ -66,11 +67,7 @@ export const createOrReturnMemoryNeuralNetwork = neuralnetworkId => {
     createdAt
   }
 
-  const created = newMemoryNeuralNetwork(memoryNeuralNetwork)
-
-  console.log('created', created)
-
-  return memoryNeuralNetwork
+  return newMemoryNeuralNetwork(memoryNeuralNetwork)
 }
 
 export const returnUserNeuralNeworkModel = async neuralnetworkId => {
@@ -91,6 +88,7 @@ export const trainMemoryNeuralNetwork = async (req, neuralnetworkId, info = { })
 
   const { model, meta } = await returnUserNeuralNeworkModel(neuralnetworkId)
 
+  console.log('model', model)
   const modelsampleIds = uniqArray(meta.map(i => i.id))
   const samplingclientIds = uniqArray(meta.map(i => i.samplingclientId))
 
@@ -98,12 +96,13 @@ export const trainMemoryNeuralNetwork = async (req, neuralnetworkId, info = { })
   if (model.length === 0) throw new UserInputError('Model can not be trained without a sample.')
 
   const firstSample = model[0]
-  console.log('firstSample', firstSample)
   if (!firstSample.input || !firstSample.output) throw new UserInputError(`First sample missing params:${JSON.stringify(firstSample)}`)
 
   const inputSize = Object.keys(firstSample.input).length
   const inputRange = Object.keys(firstSample.input).length
   const outputSize = firstSample.output.length
+
+  console.log('inputSize', inputSize)
 
   memoryNeuralNetwork.options = { inputSize, inputRange, outputSize }
 

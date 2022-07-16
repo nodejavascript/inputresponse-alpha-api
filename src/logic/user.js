@@ -1,4 +1,3 @@
-
 import { NeuralNetwork } from '../models'
 import { returnTrustedUser, findDocument, findDocuments } from './'
 
