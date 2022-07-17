@@ -73,7 +73,7 @@ export const createOrReturnMemoryNeuralNetwork = neuralnetworkId => {
 
 // need mqtt version
 export const trainMemoryNeuralNetwork = async (req, neuralnetworkId, info = { }) => {
-  console.log('need mqtt version of trainMemoryNeuralNetwork')
+  // console.log('need mqtt version of trainMemoryNeuralNetwork')
 
   const memoryNeuralNetwork = createOrReturnMemoryNeuralNetwork(neuralnetworkId)
 
