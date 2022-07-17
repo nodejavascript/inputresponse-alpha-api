@@ -6,9 +6,9 @@ import * as brain from 'brain.js'
 import { NeuralNetwork, TrainingHistory, ModelSample, ModelPrediction } from '../models'
 
 import {
-  returnMemoryNeuralNetwork,
-  newMemoryNeuralNetwork,
-  updateAndReturnMemoryNeuralNetwork,
+  returnNeuralNetworkStore,
+  newNeuralNetworkStore,
+  updateNeuralNetworkStore,
   createDocument,
   updateDocument,
   findDocuments
@@ -53,7 +53,7 @@ export const returnPredictionMemoryNeuralNetwork = async (req, { modelprediction
 }
 
 export const createOrReturnMemoryNeuralNetwork = neuralnetworkId => {
-  const existing = returnMemoryNeuralNetwork(neuralnetworkId)
+  const existing = returnNeuralNetworkStore(neuralnetworkId)
 
   if (existing) return existing
 
@@ -64,10 +64,11 @@ export const createOrReturnMemoryNeuralNetwork = neuralnetworkId => {
     neuralnetworkId: neuralnetworkId.toString(),
     isTrained: false,
     net,
-    createdAt
+    createdAt,
+    updatedAt: createdAt
   }
 
-  return newMemoryNeuralNetwork(memoryNeuralNetwork)
+  return newNeuralNetworkStore(memoryNeuralNetwork)
 }
 
 // need mqtt version
@@ -119,7 +120,7 @@ export const trainMemoryNeuralNetwork = async (req, neuralnetworkId, info = { })
     isTrained: true
   }
 
-  updateAndReturnMemoryNeuralNetwork(neuralnetworkId, update)
+  updateNeuralNetworkStore(neuralnetworkId, update)
 
   const modelsampleIds = uniqArray(modelsamples.map(i => i.id))
   const samplingclientIds = uniqArray(modelsamples.map(i => i.samplingclientId))

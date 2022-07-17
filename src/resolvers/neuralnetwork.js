@@ -1,3 +1,4 @@
+import { PubSub, withFilter } from 'apollo-server-express'
 import { User, NeuralNetwork, SamplingClient, ModelSample, TrainingHistory, ModelPrediction } from '../models'
 import {
   returnTrustedUser,
@@ -11,7 +12,8 @@ import {
 
   returnUserNeuralNetwork,
   returnUserNeuralNeworks,
-  returnMemoryNeuralNetwork,
+  returnNeuralNetworkStore,
+  updateNeuralNetworkStore,
   trainMemoryNeuralNetwork
 } from '../logic'
 
@@ -33,6 +35,11 @@ export const returnApiKeyExpired = neuralnetwork => {
 }
 
 const returnNewApiKey = apiKeyExpires => return4ByteKey()
+
+const pubsubNeuralNetwork = new PubSub()
+const pubsubName = 'TRAINED'
+
+const publishNeuralNetwork = neuralnetwork => pubsubNeuralNetwork.publish(pubsubName, { subscribeNeuralNetworkTraining: neuralnetwork })
 
 export default {
   Query: {
@@ -78,19 +85,6 @@ export default {
 
       return updateDocument(NeuralNetwork, neuralnetworkId, updateNeuralNetworkInput)
     },
-    disableModelSamples: async (root, args, { req, res }, info) => {
-      const { disableModelSamplesInput } = args
-
-      await validateDisableModelSamplesInput.validateAsync(disableModelSamplesInput, { abortEarly: false })
-
-      const { neuralnetworkId } = disableModelSamplesInput
-
-      const neuralnetwork = await returnUserNeuralNetwork(req, neuralnetworkId)
-
-      await updateDocuments(ModelSample, { neuralnetworkId, enabled: true }, { enabled: false })
-
-      return neuralnetwork
-    },
     requestNewApiKey: async (root, args, { req, res }, info) => {
       const { requestNewApiKeyInput } = args
 
@@ -113,7 +107,28 @@ export default {
         update.apiKeyCreated = new Date()
       }
 
-      return updateDocument(NeuralNetwork, neuralnetworkId, update)
+      const updatedNeuralnetwork = await updateDocument(NeuralNetwork, neuralnetworkId, update)
+
+      publishNeuralNetwork(neuralnetwork)
+
+      return updatedNeuralnetwork
+    },
+    disableModelSamples: async (root, args, { req, res }, info) => {
+      const { disableModelSamplesInput } = args
+
+      await validateDisableModelSamplesInput.validateAsync(disableModelSamplesInput, { abortEarly: false })
+
+      const { neuralnetworkId } = disableModelSamplesInput
+
+      const neuralnetwork = await returnUserNeuralNetwork(req, neuralnetworkId)
+
+      await updateDocuments(ModelSample, { neuralnetworkId, enabled: true }, { enabled: false })
+
+      updateNeuralNetworkStore(neuralnetworkId, { isTrained: false })
+
+      publishNeuralNetwork(neuralnetwork)
+
+      return neuralnetwork
     },
     trainNeuralNetwork: async (root, args, { req, res }, info) => {
       const { trainNeuralNetworkInput } = args
@@ -122,7 +137,21 @@ export default {
 
       const { neuralnetworkId } = trainNeuralNetworkInput
 
-      return trainMemoryNeuralNetwork(req, neuralnetworkId, info)
+      const neuralnetwork = await trainMemoryNeuralNetwork(req, neuralnetworkId, info)
+
+      publishNeuralNetwork(neuralnetwork)
+
+      return neuralnetwork
+    }
+  },
+  Subscription: {
+    subscribeNeuralNetworkTraining: {
+      subscribe: withFilter(
+        () => pubsubNeuralNetwork.asyncIterator([pubsubName]),
+        (payload, variables) => {
+          return (payload.subscribeNeuralNetworkTraining.id === variables.subscribeNeuralNetworkInput.neuralnetworkId)
+        }
+      )
     }
   },
   NeuralNetwork: {
@@ -141,7 +170,7 @@ export default {
     },
     memoryNeuralNetwork: (neuralnetwork, args, { req, res }, info) => {
       const { id: neuralnetworkId } = neuralnetwork
-      return returnMemoryNeuralNetwork(neuralnetworkId)
+      return returnNeuralNetworkStore(neuralnetworkId)
     },
     lastTrainingHistory: async (neuralnetwork, args, { req, res }, info) => {
       const { lastTraininghistoryId: _id } = neuralnetwork

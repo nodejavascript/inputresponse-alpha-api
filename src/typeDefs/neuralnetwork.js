@@ -16,6 +16,14 @@ export default gql`
     trainNeuralNetwork (trainNeuralNetworkInput: TrainNeuralNetworkInput!): NeuralNetwork @authenticated
   }
 
+  extend type Subscription {
+    subscribeNeuralNetworkTraining (subscribeNeuralNetworkInput: SubscribeNeuralNetworkInput!): NeuralNetwork
+  }
+
+  input SubscribeNeuralNetworkInput {
+    neuralnetworkId: ID
+  }
+
   input TrainNeuralNetworkInput {
     neuralnetworkId: ID
   }

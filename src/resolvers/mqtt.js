@@ -25,7 +25,7 @@ export default {
   Subscription: {
     sensorDataInserted: {
       subscribe: withFilter(
-        () => pubsubMqtt.asyncIterator(['MQTT_INSERTED']),
+        () => pubsubMqtt.asyncIterator([pubsubName]),
         (payload, variables) => {
           return (payload.sensorDataInserted.topic === variables.subscriptionSensorDataInserted.topic)
         }

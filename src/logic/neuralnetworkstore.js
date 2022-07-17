@@ -17,32 +17,32 @@ const memoryNeuralNetworks = []
   Objective: Support real-time prediction requests
 */
 
-export const returnMemoryNeuralNetworks = (neuralnetworkIds) => {
+export const returnNeuralNetworksStore = (neuralnetworkIds) => {
   if (!neuralnetworkIds) return memoryNeuralNetworks
   return memoryNeuralNetworks.filter(i => neuralnetworkIds.toString().includes(i.neuralnetworkId.toString()))
 }
 
-export const returnMemoryNeuralNetwork = neuralnetworkId => {
+export const returnNeuralNetworkStore = neuralnetworkId => {
   return memoryNeuralNetworks.find(i => i.neuralnetworkId === neuralnetworkId.toString())
 }
 
-export const newMemoryNeuralNetwork = memoryNeuralNetwork => {
+export const newNeuralNetworkStore = memoryNeuralNetwork => {
   memoryNeuralNetworks.push(memoryNeuralNetwork)
   const { neuralnetworkId } = memoryNeuralNetwork
-  return returnMemoryNeuralNetwork(neuralnetworkId)
+  return returnNeuralNetworkStore(neuralnetworkId)
 }
 
-export const updateAndReturnMemoryNeuralNetwork = (neuralnetworkId, update = { }) => {
+export const updateNeuralNetworkStore = (neuralnetworkId, update = { }) => {
   const index = memoryNeuralNetworks.findIndex(i => i.neuralnetworkId === neuralnetworkId.toString())
 
   const existing = memoryNeuralNetworks[index]
 
-  const createdAt = new Date()
+  const updatedAt = new Date()
 
   memoryNeuralNetworks[index] = {
     ...existing,
     ...update,
-    createdAt
+    updatedAt
   }
 
   return memoryNeuralNetworks[index]

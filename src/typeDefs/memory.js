@@ -9,10 +9,8 @@ export default gql`
 
   type MemoryNeuralNetwork {
     neuralnetworkId: String
-    modelSize: Int
-    trainingMs: Int
-    iterations: Int
-    samplesPerSecond: Float
+    isTrained: Boolean
     createdAt: String @date
+    updatedAt: String @date
   }
 `
