@@ -64,8 +64,10 @@ modelPredictionSchema.virtual('guesses').get(function () {
   const guesses = []
 
   Object.keys(this.guess).forEach(key => {
+    const confidence = Math.abs(this.guess[key] - 0.5) / 0.5
+    console.log('confidence', confidence)
     guesses.push({
-      guess: key,
+      key,
       confidence: this.guess[key]
     })
   })

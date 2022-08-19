@@ -95,8 +95,9 @@ export const trainMemoryNeuralNetwork = async (req, neuralnetworkId, info = { })
   }, 0)
 
   const inputRange = inputSize
+  const hiddenLayers = [4, 6, 5]
 
-  memoryNeuralNetwork.net.options = { inputSize, outputSize, inputRange }
+  memoryNeuralNetwork.net.options = { inputSize, outputSize, inputRange, hiddenLayers }
 
   // hiddenLayers: [4, 6, 5],
   // activation: 'sigmoid', // activation function

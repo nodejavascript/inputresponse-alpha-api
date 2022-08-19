@@ -7,7 +7,9 @@ export default gql`
 
     neuralnetworkId: String
     modelsampleIds: [String]
+    modelSamples: [ModelSample]
     samplingclientIds: [String]
+    samplingClients: [SamplingClient]
 
     modelSize: Int
     inputSize: Int

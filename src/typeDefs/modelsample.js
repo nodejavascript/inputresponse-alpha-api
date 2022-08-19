@@ -28,6 +28,8 @@ export default gql`
     user: User
     neuralNetwork: NeuralNetwork
     samplingClient: SamplingClient
+    modelpredictionId: String
+    modelPrediction: ModelPrediction
   }
 
   input InsertModelSampleInput {

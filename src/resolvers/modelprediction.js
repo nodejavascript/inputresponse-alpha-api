@@ -32,7 +32,7 @@ export default {
   Mutation: {
     // need mqtt version
     insertModelPrediction: async (root, args, { req, res }, info) => {
-      console.log('need mqtt version of insertModelPrediction')
+      // console.log('need mqtt version of insertModelPrediction')
       const { insertModelPredictionInput } = args
 
       await validateInsertModelPredictionInput.validateAsync(insertModelPredictionInput, { abortEarly: false })

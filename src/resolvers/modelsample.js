@@ -1,4 +1,4 @@
-import { User, NeuralNetwork, SamplingClient, ModelSample } from '../models'
+import { User, NeuralNetwork, SamplingClient, ModelSample, ModelPrediction } from '../models'
 import { validateApiSubmission, returnTrustedUser, findDocuments, createDocument, findDocument, updateDocument, returnUserNeuralNetwork, trainMemoryNeuralNetwork } from '../logic'
 import { validateInsertModelSampleInput, validateUpdateModelSampleInput, validateQueryModelSampleInput } from '../validation'
 
@@ -77,6 +77,10 @@ export default {
     samplingClient: async (modelsample, args, { req, res }, info) => {
       const { samplingclientId: _id } = modelsample
       return findDocument(SamplingClient, { _id })
+    },
+    modelPrediction: async (modelsample, args, { req, res }, info) => {
+      const { modelpredictionId } = modelsample
+      return findDocument(ModelPrediction, { _id: modelpredictionId })
     }
   }
 }
