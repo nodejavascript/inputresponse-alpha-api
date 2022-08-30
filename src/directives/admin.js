@@ -3,8 +3,6 @@ import { defaultFieldResolver } from 'graphql'
 
 import { returnTrustedUser } from '../logic'
 
-const { ADMIN_GOOGLEID } = process.env
-
 export default class AdminDirective extends SchemaDirectiveVisitor {
   visitFieldDefinition (field) {
     const { resolve = defaultFieldResolver } = field
@@ -12,12 +10,11 @@ export default class AdminDirective extends SchemaDirectiveVisitor {
     field.resolve = async function (...args) {
       const [, , { req }] = args
 
-      if (!ADMIN_GOOGLEID) throw new AuthenticationError('Access denied')
+      const { admin } = await returnTrustedUser(req)
 
-      const { googleUserId } = await returnTrustedUser(req)
-      if (ADMIN_GOOGLEID !== googleUserId) throw new AuthenticationError('Access denied')
+      if (admin) return resolve.apply(this, args)
 
-      return resolve.apply(this, args)
+      throw new AuthenticationError('Access denied')
     }
   }
 }

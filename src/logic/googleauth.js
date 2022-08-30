@@ -16,6 +16,7 @@ export const verifyGoogleToken = async idToken => {
     return { googleUserId }
   } catch (err) {
     const message = err.toString().split(',')[0]
-    throw new AuthenticationError(message)
+    console.log('verifyGoogleToken', message)
+    throw new AuthenticationError('LOGOUT')
   }
 }

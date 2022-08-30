@@ -1,8 +1,7 @@
 import Joi from 'joi'
-import { commonToCore, id } from './common'
+import { commonToCore, id, neuralnetworkId } from './common'
 
 const userId = id.label('userId')
-const neuralnetworkId = id.label('neuralnetworkId')
 const apiKeyExpires = Joi.date().allow(null).allow('').label('apiKeyExpires').messages()
 const resetApiKey = Joi.boolean().allow(null).label('resetApiKey').messages()
 const deleteExpiry = Joi.boolean().allow(null).label('deleteExpiry').messages()
@@ -31,11 +30,6 @@ export const validateNeuralNetworkModelInput = Joi.object().keys({
 export const validateQueryNeuralNetworkInput = Joi.object().keys({
   neuralnetworkId
 })
-
-export const validateDisableModelSamplesInput = Joi.object().keys({
-  neuralnetworkId
-})
-
 export const validateTrainNeuralNetworkInput = Joi.object().keys({
   neuralnetworkId
 })

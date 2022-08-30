@@ -9,8 +9,9 @@ export default gql`
   }
 
   extend type Mutation {
-    insertModelSample (insertModelSampleInput: InsertModelSampleInput!): ModelSample
+    insertModelSample (insertModelSampleInput: InsertModelSampleInput!): ModelSample @apikey
     updateModelSample (updateModelSampleInput: UpdateModelSampleInput!): ModelSample @authenticated
+    disableModelSamples (disableModelSamplesInput: DisableModelSamplesInput!): NeuralNetwork @apikey
   }
 
   type ModelSample {

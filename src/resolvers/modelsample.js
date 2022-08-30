@@ -1,6 +1,7 @@
 import { User, NeuralNetwork, SamplingClient, ModelSample, ModelPrediction } from '../models'
-import { validateApiSubmission, returnTrustedUser, findDocuments, createDocument, findDocument, updateDocument, returnUserNeuralNetwork, trainMemoryNeuralNetwork } from '../logic'
-import { validateInsertModelSampleInput, validateUpdateModelSampleInput, validateQueryModelSampleInput } from '../validation'
+import { validateApiSubmission, returnTrustedUser, findDocuments, createDocument, findDocument, updateDocument, returnUserNeuralNetwork, trainMemoryNeuralNetwork, updateDocuments, updateNeuralNetworkStore } from '../logic'
+import { validateInsertModelSampleInput, validateUpdateModelSampleInput, validateQueryModelSampleInput, validateDisableModelSamplesInput } from '../validation'
+import { publishNeuralNetwork } from '../resolvers/neuralnetwork'
 
 const returnEnabledUserModelSample = async (req, _id) => {
   const query = { _id }
@@ -34,19 +35,21 @@ export default {
   Mutation: {
     insertModelSample: async (root, args, { req, res }, info) => {
       const { insertModelSampleInput } = args
+      console.log('insertModelSample', insertModelSampleInput)
+      return {}
 
-      await validateInsertModelSampleInput.validateAsync(insertModelSampleInput, { abortEarly: false })
-
-      const newRecord = await validateApiSubmission(req, insertModelSampleInput)
-
-      const modelsample = await createDocument(ModelSample, newRecord)
-
-      const { neuralnetworkId, enabled } = modelsample
-      const { skipTraining } = insertModelSampleInput
-
-      !skipTraining && enabled && await trainMemoryNeuralNetwork(req, neuralnetworkId, info)
-
-      return modelsample
+      // await validateInsertModelSampleInput.validateAsync(insertModelSampleInput, { abortEarly: false })
+      //
+      // const newRecord = await validateApiSubmission(req, insertModelSampleInput)
+      //
+      // const modelsample = await createDocument(ModelSample, newRecord)
+      //
+      // const { neuralnetworkId, enabled } = modelsample
+      // const { skipTraining } = insertModelSampleInput
+      //
+      // !skipTraining && enabled && await trainMemoryNeuralNetwork(req, neuralnetworkId, info)
+      //
+      // return modelsample
     },
     updateModelSample: async (root, args, { req, res }, info) => {
       const { updateModelSampleInput } = args
@@ -62,6 +65,23 @@ export default {
       enabled && await trainMemoryNeuralNetwork(req, neuralnetworkId, info)
 
       return modelsample
+    },
+    disableModelSamples: async (root, args, { req, res }, info) => {
+      const { disableModelSamplesInput } = args
+      return {}
+      // await validateDisableModelSamplesInput.validateAsync(disableModelSamplesInput, { abortEarly: false })
+      //
+      // const { neuralnetworkId } = disableModelSamplesInput
+      //
+      // const neuralnetwork = await returnUserNeuralNetwork(req, neuralnetworkId)
+      //
+      // await updateDocuments(ModelSample, { neuralnetworkId, enabled: true }, { enabled: false })
+      //
+      // updateNeuralNetworkStore(neuralnetworkId, { isTrained: false })
+      //
+      // publishNeuralNetwork(neuralnetwork)
+      //
+      // return neuralnetwork
     }
   },
   ModelSample: {

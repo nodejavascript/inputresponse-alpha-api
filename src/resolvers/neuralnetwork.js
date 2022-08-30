@@ -8,12 +8,10 @@ import {
   createDocument,
   updateDocument,
   findDocument,
-  updateDocuments,
 
   returnUserNeuralNetwork,
   returnUserNeuralNeworks,
   returnNeuralNetworkStore,
-  updateNeuralNetworkStore,
   trainMemoryNeuralNetwork
 } from '../logic'
 
@@ -23,7 +21,6 @@ import {
   validateUpdateNeuralNetworkInput,
   validateRequestNewApiKeyInput,
   validateQueryNeuralNetworkInput,
-  validateDisableModelSamplesInput,
   validateTrainNeuralNetworkInput
 } from '../validation'
 
@@ -39,7 +36,7 @@ const returnNewApiKey = apiKeyExpires => return4ByteKey()
 const pubsubNeuralNetwork = new PubSub()
 const pubsubName = 'TRAINED'
 
-const publishNeuralNetwork = neuralnetwork => pubsubNeuralNetwork.publish(pubsubName, { subscribeNeuralNetworkTraining: neuralnetwork })
+export const publishNeuralNetwork = neuralnetwork => pubsubNeuralNetwork.publish(pubsubName, { subscribeNeuralNetworkTraining: neuralnetwork })
 
 export default {
   Query: {
@@ -112,23 +109,6 @@ export default {
       publishNeuralNetwork(neuralnetwork)
 
       return updatedNeuralnetwork
-    },
-    disableModelSamples: async (root, args, { req, res }, info) => {
-      const { disableModelSamplesInput } = args
-
-      await validateDisableModelSamplesInput.validateAsync(disableModelSamplesInput, { abortEarly: false })
-
-      const { neuralnetworkId } = disableModelSamplesInput
-
-      const neuralnetwork = await returnUserNeuralNetwork(req, neuralnetworkId)
-
-      await updateDocuments(ModelSample, { neuralnetworkId, enabled: true }, { enabled: false })
-
-      updateNeuralNetworkStore(neuralnetworkId, { isTrained: false })
-
-      publishNeuralNetwork(neuralnetwork)
-
-      return neuralnetwork
     },
     trainNeuralNetwork: async (root, args, { req, res }, info) => {
       const { trainNeuralNetworkInput } = args

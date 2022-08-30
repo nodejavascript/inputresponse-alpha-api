@@ -21,3 +21,5 @@ export const commonToCore = {
   enabled,
   archived
 }
+
+export const neuralnetworkId = id.label('neuralnetworkId')

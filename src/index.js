@@ -28,6 +28,7 @@ const requestVetting = async (req, res) => {
 }
 
 export const startGraphQLServer = async () => {
+  console.clear()
   try {
     await Promise.all([
       launchMongo(),

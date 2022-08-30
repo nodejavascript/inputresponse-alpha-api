@@ -1,5 +1,5 @@
 import Joi from 'joi'
-import { commonToCore, id, optionalId } from './common'
+import { commonToCore, id, optionalId, neuralnetworkId } from './common'
 
 const apiKey = Joi.string().required().min(32).max(32).label('apiKey').messages()
 const samplingclientId = id.label('samplingclientId')
@@ -30,4 +30,8 @@ export const validateUpdateModelSampleInput = Joi.object().keys({
 
 export const validateQueryModelSampleInput = Joi.object().keys({
   modelsampleId
+})
+
+export const validateDisableModelSamplesInput = Joi.object().keys({
+  neuralnetworkId
 })

@@ -12,7 +12,6 @@ export default gql`
     insertNeuralNetwork (insertNeuralNetworkInput: InsertNeuralNetworkInput!): NeuralNetwork @authenticated
     updateNeuralNetwork (updateNeuralNetworkInput: UpdateNeuralNetworkInput!): NeuralNetwork @authenticated
     requestNewApiKey (requestNewApiKeyInput: RequestNewApiKeyInput!): NeuralNetwork @authenticated
-    disableModelSamples (disableModelSamplesInput: DisableModelSamplesInput!): NeuralNetwork @authenticated
     trainNeuralNetwork (trainNeuralNetworkInput: TrainNeuralNetworkInput!): NeuralNetwork @authenticated
   }
 
